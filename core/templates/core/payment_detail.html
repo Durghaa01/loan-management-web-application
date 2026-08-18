@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<body>
+  <h2>Payment #{{ payment.id }}</h2>
+
+  <p><b>Agreement:</b> {{ payment.agreement.agreement_number }}</p>
+  <p><b>Date:</b> {{ payment.payment_date }}</p>
+  <p><b>Method:</b> {{ payment.method }}</p>
+  <p><b>Reference:</b> {{ payment.reference_note }}</p>
+
+  <h3>Internal (Actual)</h3>
+  <p><b>Principal:</b> {{ payment.amount_principal }}</p>
+  <p><b>Interest:</b> {{ payment.amount_interest }}</p>
+
+  <h3>Official (Reported)</h3>
+  <p><b>Principal:</b> {{ payment.reported_principal }}</p>
+  <p><b>Interest:</b> {{ payment.reported_interest }}</p>
+
+  <div class="card">
+    <h3>Next Step</h3>
+    <a class="btn" href="{% url 'receipt_generate' payment_id=payment.id %}">Generate Receipt</a>
+</div>
+
+</body>
+</html>

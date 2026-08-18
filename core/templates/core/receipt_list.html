@@ -1,0 +1,43 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>Receipts</h2>
+    <p>All generated receipts.</p>
+</div>
+
+<div class="card">
+    {% if receipts %}
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr style="background:#f3f4f6;">
+                    <th style="padding:12px; border:1px solid #ddd;">Receipt No.</th>
+                    <th style="padding:12px; border:1px solid #ddd;">Customer</th>
+                    <th style="padding:12px; border:1px solid #ddd;">Agreement</th>
+                    <th style="padding:12px; border:1px solid #ddd;">Date</th>
+                    <th style="padding:12px; border:1px solid #ddd;">Total</th>
+                    <th style="padding:12px; border:1px solid #ddd;">Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for receipt in receipts %}
+                <tr>
+                    <td style="padding:12px; border:1px solid #ddd;">{{ receipt.receipt_number }}</td>
+                    <td style="padding:12px; border:1px solid #ddd;">{{ receipt.customer.full_name }}</td>
+                    <td style="padding:12px; border:1px solid #ddd;">{{ receipt.agreement.agreement_number }}</td>
+                    <td style="padding:12px; border:1px solid #ddd;">{{ receipt.receipt_date }}</td>
+                    <td style="padding:12px; border:1px solid #ddd;">{{ receipt.total_amount }}</td>
+                    <td style="padding:12px; border:1px solid #ddd;">
+                        <a class="btn" href="{% url 'receipt_detail' receipt_id=receipt.id %}">View</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No receipts found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

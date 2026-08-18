@@ -1,0 +1,2631 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<style>
+.form-header{
+    background:linear-gradient(135deg,#0B3D91,#06295f);
+    color:white;
+    padding:26px;
+    border-radius:18px;
+    margin-bottom:22px;
+}
+
+.dob-row{
+    display:grid;
+    grid-template-columns:1fr 1fr 1fr;
+    gap:10px;
+}
+#dob_day{
+    width:90px;
+}
+
+#dob_month{
+    width:120px;
+    padding: right 30px;
+}
+
+#dob_year{
+    width:120px;
+}
+
+.dob-row select{
+    width:100%;
+}
+
+.form-header h1{
+    margin:0;
+    font-size:32px;
+    margin-bottom: 8px;
+    margin-top: -5px;
+}
+
+.custom-file-upload{
+    display:flex;
+    align-items:center;
+    gap:12px;
+}
+
+.file-input{
+    display:none;
+}
+.file-btn{
+    background:#0B3D91;
+    color:white !important;
+    height: 32px;
+    border:none;
+    line-height: 32px !important;
+    text-align: center;
+    border-radius:10px;
+
+    padding:0px 16px;
+
+    font-size:14px;
+    font-weight:400 !important;
+    font-family: inherit;
+
+    cursor:pointer;
+
+    white-space:nowrap;
+    margin: 0 !important;
+    align-self: center;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.file-display{
+    display:flex;
+    align-items:center !important;
+    gap:12px;
+
+    width:100%;
+    height:46px;
+    min-height:46px;
+
+    padding:0 14px;
+    display: flex;
+    border:1px solid #dcdcdc;
+    border-radius:14px;
+
+    background:white;
+
+    box-sizing:border-box;
+}
+
+
+.form-header p{
+    margin:8px 0 0;
+    font-size:17px;
+    opacity:0.9;
+    margin-bottom: 8px;
+}
+
+.form-card{
+    background:white;
+    padding:28px;
+    border-radius:18px;
+    margin-bottom:24px;
+    box-shadow:0 8px 22px rgba(0,0,0,0.06);
+}
+
+.form-card h3{
+    margin-top:0;
+    margin-bottom:22px;
+    color:#111827;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(4, 1fr);
+    gap:22px;
+}
+
+.form-group{
+    width:100%;
+}
+
+.form-group label{
+    display:block;
+    margin-bottom:8px;
+    font-weight:bold;
+    color:#111827;
+}
+
+.file-input{
+    display: none;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    width:100%;
+    padding:12px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    font-size:15px;
+    box-sizing:border-box;
+}
+
+.form-group textarea{
+    min-height:90px;
+    resize:vertical;
+}
+
+.form-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:12px;
+    margin-top:30px;
+    margin-bottom:30px;
+}
+.file-name{
+    color:#666;
+    font-size:14px;
+    font-weight:400;
+}
+
+@media(max-width:1200px){
+    .form-grid{
+        grid-template-columns:repeat(3, 1fr);
+    }
+}
+
+@media(max-width:900px){
+    .form-grid{
+        grid-template-columns:repeat(2, 1fr);
+    }
+}
+
+@media(max-width:600px){
+    .form-grid{
+        grid-template-columns:1fr;
+    }
+}
+</style>
+
+<div class="form-header">
+
+
+    <p>
+        <h1>Customer Profile Form</h1>
+        <span class="lang-en">Create or edit customer profile information</span>
+    </p>
+    <div >
+
+    <button
+        type="button"
+        class="btn"
+        onclick="setLanguage('en')"
+        style="background:white; color:#0B3D91; font-weight:bold; margin-top: 8px;"
+    >
+        English
+    </button>
+
+    <button
+        type="button"
+        class="btn"
+        onclick="setLanguage('ms')"
+        style="background:white; color:#0B3D91; margin-left:10px; font-weight:bold; margin-top: 8px;"
+    >
+        Bahasa Melayu
+    </button>
+
+</div>
+
+</div>
+    <div class="form-card">
+
+    <h3
+    data-en="MyKad Autofill"
+    data-ms="Isi Automatik MyKad"
+>
+    MyKad Autofill
+</h3>
+
+
+
+    <textarea
+        id="mykad_text"
+        rows="5"
+        data-en-placeholder="Paste MyKad details here..."
+    data-ms-placeholder="Tampal maklumat MyKad di sini..."
+        style="width:100%; padding:12px;"
+    ></textarea>
+
+    <br><br>
+
+    <button
+    type="button"
+    class="btn"
+    data-en="Autofill"
+    data-ms="Isi Automatik"
+>
+    Autofill
+</button>
+
+</div>
+<form method="POST" enctype="multipart/form-data" autocomplete="off">
+
+    {% csrf_token %}
+    <div class="form-card">
+
+    <h3
+    data-en="Personal Information"
+    data-ms="Maklumat Peribadi"
+>
+    Personal Information
+</h3>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label
+    data-en="Customer Number"
+    data-ms="Nombor Pelanggan"
+>
+    Customer Number
+</label>
+
+            {% if customer %}
+<input
+    type="text"
+    value="{{ customer.customer_reference }}"
+    readonly
+>
+{% else %}
+<input
+    type="text"
+    id="customer-number-display"
+    value="Auto Generated"
+    data-en="Auto Generated"
+    data-ms="Dijana Secara Automatik"
+    readonly
+>
+{% endif %}
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Full Name"
+    data-ms="Nama Penuh"
+>
+    Full Name
+</label>
+
+            <input
+    type="text"
+    name="full_name"
+    value="{{ customer.full_name|default:prefill.full_name|default:'' }}"
+>
+
+        </div>
+        <div class="form-group">
+
+    <label data-en="ID Type" data-ms="Jenis ID">
+        ID Type
+    </label>
+
+    <select name="id_type" id="id_type">
+
+    <option
+        value=""
+        data-en="Select"
+        data-ms="Pilih"
+    >
+        Select
+    </option>
+
+    <option
+        value="IC"
+        {% if customer.id_type == "IC" %}selected{% endif %}
+        data-en="IC"
+        data-ms="KP"
+    >
+        IC
+    </option>
+
+    <option
+        value="Passport"
+        {% if customer.id_type == "Passport" %}selected{% endif %}
+        data-en="Passport"
+        data-ms="Pasport"
+    >
+        Passport
+    </option>
+
+</select>
+
+</div>
+
+        <div class="form-group">
+
+            <label data-en="IC/Passport" data-ms="KP/Pasport">
+    IC/Passport
+</label>
+
+            <input
+    type="text"
+    name="ic_number"
+    id="ic_number"
+    value="{{ customer.ic_number|default:prefill.ic_number|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Phone Number"
+    data-ms="Nombor Telefon"
+>
+    Phone Number
+</label>
+
+            <input
+    type="text"
+    name="phone"
+    value="{{ customer.phone|default:prefill.phone|default:'' }}"
+>
+
+        </div>
+        <div class="form-group">
+
+    <label
+    data-en="Customer Photo"
+    data-ms="Gambar Pelanggan"
+>
+    Customer Photo
+</label>
+
+<div class="file-display">
+
+    <input
+        type="file"
+        id="customer-photo"
+        name="customer_photo"
+        class="file-input"
+    >
+
+    <label
+    for="customer-photo"
+    id="customer-photo-label"
+    class="file-btn"
+    data-en="Choose Photo"
+    data-ms="Pilih Gambar"
+>
+    Choose Photo
+</label>
+
+ <span
+        id="customer-photo-name"
+        class="file-name"
+        data-en="No file selected"
+        data-ms="Tiada fail dipilih"
+    >
+    No file selected
+ </span>
+
+</div>
+        </div>
+
+
+<div class="form-group">
+
+    <label
+    data-en="MyKad Photo"
+    data-ms="Gambar MyKad"
+>
+    MyKad Photo
+</label>
+
+   <div class="file-display">
+
+    <input
+        type="file"
+        id="mykad-photo"
+        name="mykad_photo"
+        class="file-input"
+    >
+
+    <label
+    for="mykad-photo"
+    id="mykad-photo-label"
+    class="file-btn"
+    data-en="Choose Photo"
+    data-ms="Pilih Gambar"
+>
+    Choose Photo
+</label>
+
+<span
+        id="mykad-photo-name"
+        class="file-name"
+        data-en="No file selected"
+        data-ms="Tiada fail dipilih"
+    >
+    No file selected
+    </span>
+    
+
+</div>
+</div>
+
+<div class="form-group">
+
+    <label
+    data-en="Gender"
+    data-ms="Jantina"
+>
+    Gender
+</label>
+
+    <select name="gender">
+
+<option
+    value=""
+    data-en="Select"
+    data-ms="Pilih"
+>
+    Select Gender
+</option>
+
+<option
+    value="Male"
+    {% if customer.gender == "Male" %}selected{% endif %}
+    data-en="Male"
+    data-ms="Lelaki"
+>
+    Male
+</option>
+
+<option
+    value="Female"
+    {% if customer.gender == "Female" %}selected{% endif %}
+    data-en="Female"
+    data-ms="Perempuan"
+>
+    Female
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+    <label
+        data-en="Date of Birth"
+        data-ms="Tarikh Lahir"
+    >
+        Date of Birth
+    </label>
+
+    <div class="dob-row">
+
+        <select id="dob_day">
+            <option
+    value=""
+    data-en="DD"
+    data-ms="HH"
+>
+    DD
+</option>
+        </select>
+
+        <select id="dob_month">
+            <option
+    value=""
+    data-en="MM"
+    data-ms="BB"
+>
+    MM
+</option>
+        </select>
+
+        <select id="dob_year">
+            <option
+    value=""
+    data-en="YYYY"
+    data-ms="TTTT"
+>
+    YYYY
+</option>
+        </select>
+
+    </div>
+
+    <input
+    type="hidden"
+    name="date_of_birth"
+    id="date_of_birth"
+    value="{% if customer.date_of_birth %}{{ customer.date_of_birth|date:'d/m/Y' }}{% endif %}"
+>
+
+</div>
+
+<div class="form-group">
+
+    <label
+    data-en="Age"
+    data-ms="Umur"
+>
+    Age
+</label>
+
+    <input
+        type="number"
+        name="age"
+        id="age"
+        value="{{ customer.age|default:'' }}"
+        readonly
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label
+    data-en="Marital Status"
+    data-ms="Status Perkahwinan"
+>
+    Marital Status
+</label>
+
+    <select name="marital_status">
+
+<option
+    value=""
+    {% if not customer.marital_status and not prefill.marital_status %}
+    selected
+    {% endif %}
+    data-en="Select"
+    data-ms="Pilih"
+>
+    Select
+</option>
+
+<option
+    value="SINGLE"
+    {% if customer.marital_status == "SINGLE" or prefill.marital_status == "SINGLE" %}
+    selected
+    {% endif %}
+    data-en="Single"
+    data-ms="Bujang"
+>
+    Single
+</option>
+
+<option
+    value="MARRIED"
+    {% if customer.marital_status == "MARRIED" or prefill.marital_status == "MARRIED" %}
+    selected
+    {% endif %}
+    data-en="Married"
+    data-ms="Berkahwin"
+>
+    Married
+</option>
+
+<option
+    value="WIDOW"
+    {% if customer.marital_status == "WIDOW" or prefill.marital_status == "WIDOW" %}
+    selected
+    {% endif %}
+    data-en="Widow"
+    data-ms="Janda"
+>
+    Widow
+</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+    <label
+    data-en="Email"
+    data-ms="Emel"
+>
+    Email
+</label>
+
+    <input
+    type="email"
+    name="email"
+    value="{{ customer.email|default:'' }}"
+>
+</div>
+
+<div class="form-group">
+
+    <label
+        data-en="Status"
+        data-ms="Status"
+    >
+        Status
+    </label>
+
+    <select name="is_active">
+
+        <option
+            value="True"
+            {% if customer.is_active %}
+            selected
+            {% endif %}
+            data-en="Active"
+            data-ms="Aktif"
+        >
+            Active
+        </option>
+
+        <option
+            value="False"
+            {% if customer and not customer.is_active %}
+            selected
+            {% endif %}
+            data-en="Inactive"
+            data-ms="Tidak Aktif"
+        >
+            Inactive
+        </option>
+
+    </select>
+
+</div>
+</div>
+</div>
+    <div class="form-card">
+
+    <h3 data-en="Home Information" data-ms="Maklumat Rumah">
+    Home Information
+</h3>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label
+    data-en="Home Address 1"
+    data-ms="Alamat Rumah 1"
+>
+    Home Address 1
+</label>
+
+            <textarea
+    name="home_address_1"
+    rows="3"
+>{{ customer.home_address_1|default:prefill.home_address_1|default:'' }}</textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Home Address 2"
+    data-ms="Alamat Rumah 2"
+>
+    Home Address 2
+</label>
+
+            <textarea
+    name="home_address_2"
+    rows="3"
+>{{ customer.home_address_2|default:'' }}</textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Home Address 3"
+    data-ms="Alamat Rumah 3"
+>
+    Home Address 3
+</label>
+
+            <textarea
+    name="home_address_3"
+    rows="3"
+>{{ customer.home_address_3|default:'' }}</textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Home Phone Number"
+    data-ms="Nombor Telefon Rumah"
+>
+    Home Phone Number
+</label>
+
+            <input
+    type="text"
+    name="home_phone_number"
+    value="{{ customer.home_phone_number|default:prefill.home_phone_number|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Phone Number 2"
+    data-ms="Nombor Telefon 2"
+>
+    Phone Number 2
+</label>
+
+            <input
+    type="text"
+    name="phone_number_2"
+    value="{{ customer.phone_number_2|default:prefill.phone_number_2|default:'' }}"
+>
+
+        </div>
+
+    </div>
+
+</div>
+    <div class="form-card">
+
+    <h3 data-en="Employment Information" data-ms="Maklumat Pekerjaan">
+    Employment Information
+</h3>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label
+    data-en="Working Status"
+    data-ms="Status Pekerjaan"
+>
+    Working Status
+</label>
+
+           <select name="working_status">
+
+<option
+    value=""
+    data-en="Select"
+    data-ms="Pilih"
+>
+    Select
+</option>
+
+<option
+    value=""
+    data-en="Not Applicable"
+    data-ms="Tidak Berkaitan"
+>
+    Not Applicable
+</option>
+
+<option
+    value="Government"
+    {% if customer.working_status == "Government" %}selected{% endif %}
+    data-en="Government"
+    data-ms="Kerajaan"
+>
+    Government
+</option>
+
+<option
+    value="Private"
+    {% if customer.working_status == "Private" %}selected{% endif %}
+    data-en="Private"
+    data-ms="Swasta"
+>
+    Private
+</option>
+
+<option
+    value="Self Employed"
+    {% if customer.working_status == "Self Employed" %}selected{% endif %}
+    data-en="Self Employed"
+    data-ms="Bekerja Sendiri"
+>
+    Self Employed
+</option>
+
+<option
+    value="Unemployed"
+    {% if customer.working_status == "Unemployed" %}selected{% endif %}
+    data-en="Unemployed"
+    data-ms="Tidak Bekerja"
+>
+    Unemployed
+</option>
+
+<option
+    value="Retired"
+    {% if customer.working_status == "Retired" %}selected{% endif %}
+    data-en="Retired"
+    data-ms="Pesara"
+>
+    Retired
+</option>
+
+</select>
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Employer Name"
+    data-ms="Nama Majikan"
+>
+    Employer Name
+</label>
+
+            <input
+    type="text"
+    name="employer_name"
+    value="{{ customer.employer_name|default:prefill.employer_name|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Employer Address"
+    data-ms="Alamat Majikan"
+>
+    Employer Address
+</label>
+
+            <textarea
+    name="employer_address"
+    rows="3"
+>{{ customer.employer_address|default:prefill.employer_address|default:'' }}</textarea>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Office Phone Number"
+    data-ms="Nombor Telefon Pejabat"
+>
+    Office Phone Number
+</label>
+
+            <input
+    type="text"
+    name="office_phone_number"
+    value="{{ customer.office_phone_number|default:prefill.office_phone_number|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Total Working Years"
+    data-ms="Jumlah Tahun Bekerja"
+>
+    Total Working Years
+</label>
+
+            <input
+    type="text"
+    name="total_working_years"
+    value="{{ customer.total_working_years|default:prefill.total_working_years|default:'' }}"
+>
+
+        </div>
+
+    </div>
+
+</div>
+    <div class="form-card">
+
+    <h3 data-en="Family Information" data-ms="Maklumat Keluarga">
+    Family Information
+</h3>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label
+    data-en="Spouse Full Name"
+    data-ms="Nama Penuh Pasangan"
+>
+    Spouse Full Name
+</label>
+
+            <input
+    type="text"
+    name="spouse_name"
+    value="{{ customer.spouse_name|default:prefill.spouse_name|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+           <label
+    data-en="Spouse IC/Passport"
+    data-ms="KP/Pasport Pasangan"
+>
+    Spouse IC/Passport
+</label>
+
+            <input
+    type="text"
+    name="spouse_ic_number"
+    value="{{ customer.spouse_ic_number|default:prefill.spouse_ic_number|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Spouse Age"
+    data-ms="Umur Pasangan"
+>
+    Spouse Age
+</label>
+
+            <input
+    type="number"
+    name="spouse_age"
+    value="{{ customer.spouse_age|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Spouse Job"
+    data-ms="Pekerjaan Pasangan"
+>
+    Spouse Job
+</label>
+
+            <input
+    type="text"
+    name="spouse_job"
+    value="{{ customer.spouse_job|default:prefill.spouse_job|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Spouse Monthly Income"
+    data-ms="Pendapatan Bulanan Pasangan"
+>
+    Spouse Monthly Income
+</label>
+            <input
+    type="number"
+    step="0.01"
+    name="spouse_monthly_income"
+    value="{{ customer.spouse_monthly_income|default:prefill.spouse_monthly_income|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Number of Children"
+    data-ms="Bilangan Anak"
+>
+    Number of Children
+</label>
+
+           <input
+    type="number"
+    name="number_of_children"
+    value="{{ customer.number_of_children|default:prefill.number_of_children|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Number of Schooling Children"
+    data-ms="Bilangan Anak Bersekolah"
+>
+    Number of Schooling Children
+</label>
+
+            <input
+    type="number"
+    name="number_of_schooling_children"
+    value="{{ customer.number_of_schooling_children|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Number of Working Children"
+    data-ms="Bilangan Anak Bekerja"
+>
+    Number of Working Children
+</label>
+
+            <input
+    type="number"
+    name="number_of_working_children"
+    value="{{ customer.number_of_working_children|default:prefill.number_of_working_children|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Working Children Total Income"
+    data-ms="Jumlah Pendapatan Anak Bekerja"
+>
+    Working Children Total Income
+</label>
+
+            <input
+    type="number"
+    step="0.01"
+    name="working_children_total_income"
+    value="{{ customer.working_children_total_income|default:'' }}"
+>
+
+        </div>
+
+    </div>
+
+</div>
+    <div class="form-card">
+
+    <h3 data-en="Financial Information" data-ms="Maklumat Kewangan">
+    Financial Information
+</h3>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label
+    data-en="Monthly Net Income"
+    data-ms="Pendapatan Bersih Bulanan"
+>
+    Monthly Net Income
+</label>
+
+            <input
+    type="number"
+    step="0.01"
+    name="monthly_net_income"
+    value="{{ customer.monthly_net_income|default:prefill.monthly_net_income|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Basic Monthly Salary"
+    data-ms="Gaji Asas Bulanan"
+>
+    Basic Monthly Salary
+</label>
+
+            <input
+    type="number"
+    step="0.01"
+    name="basic_monthly_salary"
+    value="{{ customer.basic_monthly_salary|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Other Income Name"
+    data-ms="Nama Pendapatan Lain"
+>
+    Other Income Name
+</label>
+
+           <input
+    type="text"
+    name="other_income_name"
+    value="{{ customer.other_income_name|default:prefill.other_income_name|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Other Income Total"
+    data-ms="Jumlah Pendapatan Lain"
+>
+    Other Income Total
+</label>
+
+            <input
+    type="number"
+    step="0.01"
+    name="other_income_total"
+    value="{{ customer.other_income_total|default:prefill.other_income_total|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Car Monthly Loan"
+    data-ms="Pinjaman Kereta Bulanan"
+>
+    Car Monthly Loan
+</label>
+
+            <input
+                type="number"
+                step="0.01"
+                name="car_loan"
+                id="car_loan"
+                value="{{ customer.car_loan|default:prefill.car_loan|default:'' }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Home Monthly Loan"
+    data-ms="Pinjaman Rumah Bulanana"
+>
+    Home Monthly Loan
+</label>
+
+            <input
+                type="number"
+                step="0.01"
+                name="house_loan"
+                id="house_loan"
+                value="{{ customer.house_loan|default:prefill.house_loan|default:'' }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Motorcycle Monthly Loan"
+    data-ms="Pinjaman Motosikal Bulanan"
+>
+    Motorcycle Monthly Loan
+</label>
+
+            <input
+                type="number"
+                step="0.01"
+                name="motorcycle_loan"
+                id="motorcycle_loan"
+                value="{{ customer.motorcycle_loan|default:prefill.motorcycle_loan|default:'' }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Other Loan"
+    data-ms="Pinjaman Lain"
+>
+    Other Loan
+</label>
+
+            <input
+                type="number"
+                step="0.01"
+                name="other_loan"
+                id="other_loan"
+                value="{{ customer.other_loan|default:'' }}"
+            >
+
+        </div>
+
+                <div class="form-group">
+
+            <label
+    data-en="House Monthly Rental"
+    data-ms="Sewa Rumah Bulanan"
+>
+    House Monthly Rental
+</label>
+
+            <input
+                type="number"
+                step="0.01"
+                name="house_monthly_rental"
+                value="{% if customer %}{{ customer.house_monthly_rental|default:'' }}{% else %}{{ prefill.house_monthly_rental|default:'' }}{% endif %}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Monthly Loan Total"
+    data-ms="Jumlah Pinjaman Bulanan"
+>
+    Monthly Loan Total
+</label>
+
+            <input
+                type="number"
+                step="0.01"
+                name="monthly_loan_total"
+                id="monthly_loan_total"
+                value="{{ customer.monthly_loan_total|default:'' }}"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+    <div class="form-card">
+
+    <h3 data-en="Housing & Vehicle Information" data-ms="Maklumat Perumahan & Kenderaan">
+    Housing & Vehicle Information
+</h3>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label
+    data-en="House Type"
+    data-ms="Jenis Rumah"
+>
+    House Type
+</label>
+
+            <select name="house_type">
+
+<option value="" data-en="Select" data-ms="Pilih">
+    Select
+</option>
+
+<option value="" data-en="Not Applicable" data-ms="Tidak Berkaitan">
+    Not Applicable
+</option>
+
+<option value="Terrace House"
+{% if customer.house_type == "Terrace House" %}selected{% endif %}
+data-en="Terrace House"
+data-ms="Rumah Teres">
+    Terrace House
+</option>
+
+<option value="Semi D"
+{% if customer.house_type == "Semi D" %}selected{% endif %}
+data-en="Semi Detached"
+data-ms="Rumah Berkembar">
+    Semi D
+</option>
+
+<option value="Bungalow"
+{% if customer.house_type == "Bungalow" %}selected{% endif %}
+data-en="Bungalow"
+data-ms="Banglo">
+    Bungalow
+</option>
+
+<option value="Flat"
+{% if customer.house_type == "Flat" %}selected{% endif %}
+data-en="Flat"
+data-ms="Flat">
+    Flat
+</option>
+
+<option value="Apartment"
+{% if customer.house_type == "Apartment" %}selected{% endif %}
+data-en="Apartment"
+data-ms="Apartmen">
+    Apartment
+</option>
+
+<option value="Condominium"
+{% if customer.house_type == "Condominium" %}selected{% endif %}
+data-en="Condominium"
+data-ms="Kondominium">
+    Condominium
+</option>
+
+</select>
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="House Ownership"
+    data-ms="Pemilikan Rumah"
+>
+    House Ownership
+</label>
+
+           <select name="house_ownership">
+
+<option value="" data-en="Select" data-ms="Pilih">
+    Select
+</option>
+
+<option value="" data-en="Not Applicable" data-ms="Tidak Berkaitan">
+    Not Applicable
+</option>
+
+<option value="Owned"
+{% if customer.house_ownership == "Owned" %}selected{% endif %}
+data-en="Owned"
+data-ms="Milik Sendiri">
+    Owned
+</option>
+
+<option value="Rented"
+{% if customer.house_ownership == "Rented" %}selected{% endif %}
+data-en="Rented"
+data-ms="Sewa">
+    Rented
+</option>
+
+</select>
+
+        </div>
+
+
+
+
+        <div class="form-group">
+
+            <label
+    data-en="Vehicle Type"
+    data-ms="Jenis Kenderaan"
+>
+    Vehicle Type
+</label>
+
+           <select name="vehicle_type">
+
+<option value="" data-en="Select" data-ms="Pilih">
+    Select
+</option>
+
+<option value="" data-en="Not Applicable" data-ms="Tidak Berkaitan">
+    Not Applicable
+</option>
+
+<option value="Sedan"
+{% if customer.vehicle_type == "Sedan" %}selected{% endif %}>
+    Sedan
+</option>
+
+<option value="Motorcycle"
+{% if customer.vehicle_type == "Motorcycle" %}selected{% endif %}>
+    Motorcycle
+</option>
+
+<option value="Van"
+{% if customer.vehicle_type == "Van" %}selected{% endif %}>
+    Van
+</option>
+
+<option value="SUV"
+{% if customer.vehicle_type == "SUV" %}selected{% endif %}>
+    SUV
+</option>
+
+<option value="Truck"
+{% if customer.vehicle_type == "Truck" %}selected{% endif %}>
+    Truck
+</option>
+
+<option value="Other"
+{% if customer.vehicle_type == "Other" %}selected{% endif %}
+    data-en="Other"
+    data-ms="Lain-lain"
+>
+    Other
+</option>
+
+</select>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Vehicle Name"
+    data-ms="Nama Kenderaan"
+>
+    Vehicle Name
+</label>
+
+            <input
+                type="text"
+                name="vehicle_name"
+                value="{{ customer.vehicle_name|default:'' }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Vehicle Registration Number"
+    data-ms="Nombor Pendaftaran Kenderaan"
+>
+    Vehicle Registration Number
+</label>
+
+            <input
+                type="text"
+                name="vehicle_registration_number"
+                value="{{ customer.vehicle_registration_number|default:'' }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Vehicle Color"
+    data-ms="Warna Kenderaan"
+>
+    Vehicle Color
+</label>
+
+            <input
+                type="text"
+                name="vehicle_color"
+                value="{{ customer.vehicle_color|default:'' }}"
+            >
+
+        </div>
+
+
+    </div>
+
+</div>
+    <div class="form-card">
+
+    <h3 data-en="Payment Information" data-ms="Maklumat Pembayaran">
+    Payment Information
+</h3>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+    <label
+        data-en="Payment Bank Name"
+        data-ms="Nama Bank Pembayaran"
+    >
+        Payment Bank Name
+    </label>
+
+    <select name="payment_bank_name" id="payment_bank_name">
+
+             
+
+<option value="" data-en="Select" data-ms="Pilih">
+    Select
+</option>
+
+<option value="Maybank" {% if customer.payment_bank_name == "Maybank" %}selected{% endif %}>
+    Maybank
+</option>
+
+<option value="CIMB Bank" {% if customer.payment_bank_name == "CIMB Bank" %}selected{% endif %}>
+    CIMB Bank
+</option>
+
+<option value="Public Bank" {% if customer.payment_bank_name == "Public Bank" %}selected{% endif %}>
+    Public Bank
+</option>
+
+<option value="RHB Bank" {% if customer.payment_bank_name == "RHB Bank" %}selected{% endif %}>
+    RHB Bank
+</option>
+
+<option value="Hong Leong Bank" {% if customer.payment_bank_name == "Hong Leong Bank" %}selected{% endif %}>
+    Hong Leong Bank
+</option>
+
+<option value="AmBank" {% if customer.payment_bank_name == "AmBank" %}selected{% endif %}>
+    AmBank
+</option>
+
+<option value="Bank Kerjasama Rakyat" {% if customer.payment_bank_name == "Bank Kerjasama Rakyat" %}selected{% endif %}>
+    Bank Kerjasama Rakyat
+</option>
+
+<option value="Bank Simpanan Nasional" {% if customer.payment_bank_name == "Bank Simpanan Nasional" %}selected{% endif %}>
+    Bank Simpanan Nasional
+</option>
+
+<option value="Affin Bank" {% if customer.payment_bank_name == "Affin Bank" %}selected{% endif %}>
+    Affin Bank
+</option>
+
+<option value="HSBC Bank" {% if customer.payment_bank_name == "HSBC Bank" %}selected{% endif %}>
+    HSBC Bank
+</option>
+
+<option value="UOB Bank" {% if customer.payment_bank_name == "UOB Bank" %}selected{% endif %}>
+    UOB Bank
+</option>
+
+<option value="OCBC Bank" {% if customer.payment_bank_name == "OCBC Bank" %}selected{% endif %}>
+    OCBC Bank
+</option>
+
+<option value="Bank Muamalat" {% if customer.payment_bank_name == "Bank Muamalat" %}selected{% endif %}>
+    Bank Muamalat
+</option>
+
+<option value="Standard Charted Bank" {% if customer.payment_bank_name == "Standard Charted Bank" %}selected{% endif %}>
+   Standard Charted Bank
+</option>
+
+<option value="Other" {% if customer.payment_bank_name == "Other" %}selected{% endif %}
+data-en="Other"
+    data-ms="Lain-lain"
+>
+    Other
+</option>
+
+</select>
+
+</div>
+
+<div
+    class="form-group"
+    id="payment_other_bank_wrapper"
+    style="display:none;"
+>
+
+    <label
+        data-en="Other Payment Bank Name"
+        data-ms="Nama Bank Pembayaran Lain"
+    >
+        Other Payment Bank Name
+    </label>
+
+    <input
+        type="text"
+        name="payment_other_bank_name"
+        id="payment_other_bank_name"
+        value="{{ customer.payment_other_bank_name|default:'' }}"
+    >
+
+</div>
+
+
+       <div class="form-group">
+
+    <label
+        data-en="Balance Transfer Bank"
+        data-ms="Bank Pemindahan Baki"
+    >
+        Balance Transfer Bank
+    </label>
+
+    <select name="balance_transfer_bank_name" id="balance_transfer_bank_name">
+        <option value="" data-en="Select" data-ms="Pilih">
+        Select
+    </option>
+
+    <option value="Maybank" {% if customer.balance_transfer_bank_name == "Maybank" %}selected{% endif %}>
+        Maybank
+    </option>
+
+    <option value="CIMB Bank" {% if customer.balance_transfer_bank_name == "CIMB Bank" %}selected{% endif %}>
+        CIMB Bank
+    </option>
+
+    <option value="Public Bank" {% if customer.balance_transfer_bank_name == "Public Bank" %}selected{% endif %}>
+        Public Bank
+    </option>
+
+    <option value="RHB Bank" {% if customer.balance_transfer_bank_name == "RHB Bank" %}selected{% endif %}>
+        RHB Bank
+    </option>
+
+    <option value="Hong Leong Bank" {% if customer.balance_transfer_bank_name == "Hong Leong Bank" %}selected{% endif %}>
+        Hong Leong Bank
+    </option>
+
+    <option value="AmBank" {% if customer.balance_transfer_bank_name == "AmBank" %}selected{% endif %}>
+        AmBank
+    </option>
+
+    <option value="Bank Kerjasama Rakyat" {% if customer.balance_transfer_bank_name == "Bank Kerjasama Rakyat" %}selected{% endif %}>
+        Bank Kerjasama Rakyat
+    </option>
+
+    <option value="Bank Simpanan Nasional" {% if customer.balance_transfer_bank_name == "Bank Simpanan Nasional" %}selected{% endif %}>
+        Bank Simpanan Nasional
+    </option>
+
+    <option value="Affin Bank" {% if customer.balance_transfer_bank_name == "Affin Bank" %}selected{% endif %}>
+        Affin Bank
+    </option>
+
+    <option value="HSBC Bank" {% if customer.balance_transfer_bank_name == "HSBC Bank" %}selected{% endif %}>
+        HSBC Bank
+    </option>
+
+    <option value="UOB Bank" {% if customer.balance_transfer_bank_name == "UOB Bank" %}selected{% endif %}>
+        UOB Bank
+    </option>
+
+    <option value="OCBC Bank" {% if customer.balance_transfer_bank_name == "OCBC Bank" %}selected{% endif %}>
+        OCBC Bank
+    </option>
+
+    <option value="Bank Muamalat" {% if customer.balance_transfer_bank_name == "Bank Muamalat" %}selected{% endif %}>
+        Bank Muamalat
+    </option>
+
+    <option value="Standard Charted Bank" {% if customer.balance_transfer_bank_name == "Standard Charted Bank" %}selected{% endif %}>
+    Standard Charted Bank
+    </option>
+
+    <option value="Other" {% if customer.balance_transfer_bank_name == "Other" %}selected{% endif %}
+    data-en="Other"
+    data-ms="Lain-lain"
+    >
+        Other
+    </option>
+    </select>
+
+</div>
+
+<div
+    class="form-group"
+    id="balance_transfer_other_bank_wrapper"
+    style="display:none;"
+>
+
+    <label
+        data-en="Other Balance Transfer Bank Name"
+        data-ms="Nama Bank Pemindahan Baki Lain"
+    >
+        Other Balance Transfer Bank Name
+    </label>
+
+    <input
+        type="text"
+        name="balance_transfer_other_bank_name"
+        id="balance_transfer_other_bank_name"
+        value="{{ customer.balance_transfer_other_bank_name|default:'' }}"
+    >
+
+</div>
+
+
+
+        <div class="form-group">
+
+            <label
+    data-en="Balance Transfer Account Number"
+    data-ms="Nombor Akaun Pemindahan Baki"
+>
+    Balance Transfer Account Number
+</label>
+
+            <input
+                type="text"
+                name="balance_transfer_account_number"
+                value="{{ customer.balance_transfer_account_number|default:'' }}"
+            >
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Balance Transfer Account Owner"
+    data-ms="Pemilik Akaun Pemindahan Baki"
+>
+    Balance Transfer Account Owner
+</label>
+
+            <input
+                type="text"
+                name="balance_transfer_account_owner"
+                value="{{ customer.balance_transfer_account_owner|default:'' }}"
+            >
+
+        </div>
+
+    </div>
+
+</div>
+
+<div class="form-card">
+
+    <h3 data-en="Other Information" data-ms="Maklumat Lain">
+    Other Information
+</h3>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label
+    data-en="Introduced By"
+    data-ms="Diperkenalkan Oleh"
+>
+    Introduced By
+</label>
+
+            <input
+    type="text"
+    name="introduced_by"
+    value="{{ customer.introduced_by|default:prefill.introduced_by|default:'' }}"
+>
+
+        </div>
+
+        <div class="form-group">
+
+            <label
+    data-en="Introducer IC/Passport"
+    data-ms="KP/Pasport Pengenal"
+>
+    Introducer IC/Passport
+</label>
+
+            <input
+    type="text"
+    name="introducer_ic_number"
+    value="{{ customer.introducer_ic_number|default:'' }}"
+>
+
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="form-group">
+
+        <label
+    data-en="Note"
+    data-ms="Nota"
+>
+    Note
+</label>
+
+        <textarea
+    name="note"
+    rows="4"
+>{{ customer.note|default:'' }}</textarea>
+
+    </div>
+
+    <br>
+
+    <div class="form-group">
+
+        <label
+    data-en="Internal Note"
+    data-ms="Nota Dalaman"
+>
+    Internal Note
+</label>
+
+        <textarea
+    name="internal_note"
+    rows="4"
+>{{ customer.internal_note|default:'' }}</textarea>
+
+    </div>
+
+</div>
+
+<div
+    style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-bottom:30px;
+    "
+>
+
+    {% if customer %}
+
+<a
+    href="{% url 'customer_summary' customer.id %}"
+    class="btn"
+    style="background:#6b7280;"
+    data-en="Cancel"
+    data-ms="Cancel"
+>
+    Cancel
+</a>
+
+{% else %}
+
+<a
+    href="{% url 'customers_list' %}"
+    class="btn"
+    style="background:#6b7280;"
+    data-en="Cancel"
+    data-ms="Cancel"
+>
+    Cancel
+</a>
+
+{% endif %}
+
+    <button
+    type="submit"
+    class="btn"
+>
+
+    {% if customer %}
+
+<span
+    data-en="Update Customer"
+    data-ms="Update Customer"
+>
+    Update Customer
+</span>
+
+{% else %}
+
+<span
+    data-en="Save Customer"
+    data-ms="Save Customer"
+>
+    Save Customer
+</span>
+
+{% endif %}
+
+</button>
+
+</div>
+
+</form>
+<script>
+function calculateAge(){
+
+    const dobField = document.getElementById("date_of_birth");
+    const ageField = document.getElementById("age");
+
+    if (!dobField || !ageField || !dobField.value) {
+        return;
+    }
+
+    const parts = dobField.value.split("/");
+
+    if(parts.length !== 3){
+        return;
+    }
+
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]) - 1;
+    const year = parseInt(parts[2]);
+
+    const birthDate = new Date(year, month, day);
+    const today = new Date();
+
+    let age = today.getFullYear() - birthDate.getFullYear();
+
+    const monthDiff = today.getMonth() - birthDate.getMonth();
+
+    if(
+        monthDiff < 0 ||
+        (
+            monthDiff === 0 &&
+            today.getDate() < birthDate.getDate()
+        )
+    ){
+        age--;
+    }
+
+    ageField.value = age;
+}
+
+function fillDobFromIC(){
+
+    const idType = document.getElementById("id_type");
+    const icField = document.getElementById("ic_number");
+    const dobField = document.getElementById("date_of_birth");
+
+    if(!idType || !icField || !dobField){
+        return;
+    }
+
+    if(idType.value !== "IC"){
+        return;
+    }
+
+    let ic = icField.value.replace(/\D/g, "");
+
+    if(ic.length < 6){
+        return;
+    }
+
+    const yy = parseInt(ic.substring(0, 2));
+    const mm = ic.substring(2, 4);
+    const dd = ic.substring(4, 6);
+
+    const currentYear = new Date().getFullYear();
+    const currentYY = currentYear % 100;
+
+    const fullYear = yy <= currentYY ? 2000 + yy : 1900 + yy;
+
+  daySelect.value =
+parseInt(dd);
+
+monthSelect.value =
+parseInt(mm);
+
+yearSelect.value =
+fullYear;
+
+updateDobField();
+
+    calculateAge();
+}
+
+document.addEventListener("DOMContentLoaded", function(){
+
+    const idType = document.getElementById("id_type");
+    const icField = document.getElementById("ic_number");
+    const dobField = document.getElementById("date_of_birth");
+
+    if(idType){
+        idType.addEventListener("change", function(){
+
+            if(idType.value === "IC"){
+                fillDobFromIC();
+            }
+
+        });
+    }
+
+    if(icField){
+        icField.addEventListener("input", fillDobFromIC);
+    }
+
+    if(dobField){
+        dobField.addEventListener("input", calculateAge);
+        calculateAge();
+    }
+
+});
+</script>
+
+<script>
+function setLanguage(lang){
+
+    document.querySelectorAll("[data-en]").forEach(function(el){
+
+        if(lang === "en"){
+            el.textContent = el.getAttribute("data-en");
+        } else {
+            el.textContent = el.getAttribute("data-ms");
+        }
+
+    });
+
+    const customerNumberDisplay =
+    document.getElementById("customer-number-display");
+
+if(customerNumberDisplay){
+
+    if(lang === "en"){
+        customerNumberDisplay.value =
+            customerNumberDisplay.getAttribute("data-en");
+    }
+    else{
+        customerNumberDisplay.value =
+            customerNumberDisplay.getAttribute("data-ms");
+    }
+}
+
+    localStorage.setItem(
+        "customer_form_language",
+        lang
+    );
+
+    document.querySelectorAll("[data-en-placeholder]").forEach(function(el){
+
+    if(lang === "en"){
+        el.placeholder =
+            el.getAttribute("data-en-placeholder");
+    }
+    else{
+        el.placeholder =
+            el.getAttribute("data-ms-placeholder");
+    }
+
+});
+const monthSelect =
+    document.getElementById("dob_month");
+
+if(monthSelect){
+
+    monthSelect.querySelectorAll("option").forEach(
+        function(option){
+
+            if(option.hasAttribute("data-en")){
+
+                option.text =
+                    lang === "ms"
+                    ? option.getAttribute("data-ms")
+                    : option.getAttribute("data-en");
+
+            }
+
+        }
+    );
+
+}
+}
+
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const savedLang =
+            localStorage.getItem("customer_form_language") || "en";
+
+        setLanguage(savedLang);
+
+    }
+);
+
+document.getElementById("customer-photo")?.addEventListener(
+    "change",
+    function(){
+
+        const lang =
+            localStorage.getItem("customer_form_language") || "en";
+
+        document.getElementById("customer-photo-name").textContent =
+            this.files.length
+            ? (lang === "ms" ? "✓ Gambar Dipilih" : "✓ Photo Selected")
+            : (lang === "ms" ? "Tiada fail dipilih" : "No file selected");
+    }
+);
+
+document.getElementById("mykad-photo")?.addEventListener(
+    "change",
+    function(){
+
+        const lang =
+            localStorage.getItem("customer_form_language") || "en";
+
+        document.getElementById("mykad-photo-name").textContent =
+            this.files.length
+            ? (lang === "ms" ? "✓ Gambar Dipilih" : "✓ Photo Selected")
+            : (lang === "ms" ? "Tiada fail dipilih" : "No file selected");
+    }
+);
+const lang =
+    localStorage.getItem("customer_form_language") || "en";
+
+const customerPhotoLabel =
+    document.getElementById("customer-photo-label");
+
+if(customerPhotoLabel &&
+   customerPhotoLabel.textContent.includes("Choose"))
+{
+    customerPhotoLabel.textContent =
+        lang === "ms"
+        ? "Pilih Gambar"
+        : "Choose Photo";
+}
+
+const mykadPhotoLabel =
+    document.getElementById("mykad-photo-label");
+
+if(mykadPhotoLabel &&
+   mykadPhotoLabel.textContent.includes("Choose"))
+{
+    mykadPhotoLabel.textContent =
+        lang === "ms"
+        ? "Pilih Gambar"
+        : "Choose Photo";
+}
+
+const customerPhotoName =
+    document.getElementById("customer-photo-name");
+
+if(customerPhotoName &&
+   customerPhotoName.textContent.includes("No file"))
+{
+    customerPhotoName.textContent =
+        lang === "ms"
+        ? "Tiada fail dipilih"
+        : "No file selected";
+}
+
+const mykadPhotoName =
+    document.getElementById("mykad-photo-name");
+
+if(mykadPhotoName &&
+   mykadPhotoName.textContent.includes("No file"))
+{
+    mykadPhotoName.textContent =
+        lang === "ms"
+        ? "Tiada fail dipilih"
+        : "No file selected";
+}
+</script>
+
+
+<script>
+
+const daySelect =
+document.getElementById("dob_day");
+
+const monthSelect =
+document.getElementById("dob_month");
+
+const yearSelect =
+document.getElementById("dob_year");
+
+const hiddenDob =
+document.getElementById("date_of_birth");
+
+
+for(let d = 1; d <= 31; d++){
+
+    let option =
+    document.createElement("option");
+
+    option.value = d;
+
+    option.text =
+    String(d).padStart(2,"0");
+
+    daySelect.appendChild(option);
+}
+
+
+const englishMonths = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December"
+];
+
+const malayMonths = [
+    "Januari",
+    "Februari",
+    "Mac",
+    "April",
+    "Mei",
+    "Jun",
+    "Julai",
+    "Ogos",
+    "September",
+    "Oktober",
+    "November",
+    "Disember"
+];
+
+for(let m = 1; m <= 12; m++){
+
+    let option =
+    document.createElement("option");
+
+    option.value = m;
+
+    option.setAttribute(
+        "data-en",
+        englishMonths[m - 1]
+    );
+
+    option.setAttribute(
+        "data-ms",
+        malayMonths[m - 1]
+    );
+
+    option.text =
+        englishMonths[m - 1];
+
+    monthSelect.appendChild(option);
+}
+
+
+const currentYear =
+new Date().getFullYear();
+
+for(
+    let y = currentYear;
+    y >= 1900;
+    y--
+){
+
+    let option =
+    document.createElement("option");
+
+    option.value = y;
+
+    option.text = y;
+
+    yearSelect.appendChild(option);
+}
+
+
+function updateDobField(){
+
+    if(
+        daySelect.value &&
+        monthSelect.value &&
+        yearSelect.value
+    ){
+
+        hiddenDob.value =
+            String(daySelect.value)
+                .padStart(2,"0")
+            + "/"
+            + String(monthSelect.value)
+                .padStart(2,"0")
+            + "/"
+            + yearSelect.value;
+
+        calculateAge();
+    }
+}
+
+
+daySelect.addEventListener(
+    "change",
+    updateDobField
+);
+
+monthSelect.addEventListener(
+    "change",
+    updateDobField
+);
+
+yearSelect.addEventListener(
+    "change",
+    updateDobField
+);
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const existingDob =
+            document.getElementById(
+                "date_of_birth"
+            ).value;
+
+        if(existingDob){
+
+            const parts =
+                existingDob.split("/");
+
+            if(parts.length === 3){
+
+                daySelect.value =
+                    parseInt(parts[0]);
+
+                monthSelect.value =
+                    parseInt(parts[1]);
+
+                yearSelect.value =
+                    parts[2];
+            }
+        }
+
+    }
+);
+
+</script>
+<script>
+window.onload = function(){
+
+    if(
+        performance.navigation &&
+        performance.navigation.type === 2
+    ){
+        location.reload();
+    }
+
+};
+</script>
+{% if not customer %}
+<script>
+window.addEventListener("pageshow", function(event){
+
+    if(event.persisted){
+
+        const form = document.querySelector("form");
+
+        if(form){
+            form.reset();
+        }
+
+        document.querySelectorAll("input[type='text'], input[type='email'], input[type='number'], textarea").forEach(function(input){
+            input.value = "";
+        });
+
+        document.querySelectorAll("select").forEach(function(select){
+            select.selectedIndex = 0;
+        });
+
+        const customerNumber =
+            document.getElementById("customer-number-display");
+
+        if(customerNumber){
+            customerNumber.value =
+                localStorage.getItem("customer_form_language") === "ms"
+                ? "Dijana Secara Automatik"
+                : "Auto Generated";
+        }
+    }
+
+});
+</script>
+{% endif %}
+{% if from_customer_create or from_customer_edit %}
+
+<script>
+
+window.history.pushState(
+    {},
+    "",
+    window.location.href
+);
+
+window.addEventListener(
+    "popstate",
+    function(){
+
+        window.location.href =
+            "{% url 'customers_list' %}";
+
+    }
+);
+
+</script>
+
+{% endif %}
+
+{% if clear_customer_form %}
+
+<script>
+
+window.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        const form =
+            document.querySelector("form");
+
+        if(form){
+            form.reset();
+        }
+
+    }
+);
+
+</script>
+
+{% endif %}
+
+
+{% if customer %}
+<script>
+window.addEventListener("pageshow", function(event){
+
+    const navType =
+        performance.getEntriesByType("navigation")[0]?.type;
+
+    if(event.persisted || navType === "back_forward"){
+        window.location.replace("{% url 'customers_list' %}");
+    }
+
+});
+</script>
+{% endif %}
+
+<script>
+
+function calculateMonthlyLoanTotal(){
+
+    const car =
+        parseFloat(
+            document.getElementById("car_loan")?.value
+        ) || 0;
+
+    const house =
+        parseFloat(
+            document.getElementById("house_loan")?.value
+        ) || 0;
+
+    const motorcycle =
+        parseFloat(
+            document.getElementById("motorcycle_loan")?.value
+        ) || 0;
+
+    const other =
+        parseFloat(
+            document.getElementById("other_loan")?.value
+        ) || 0;
+
+    const total =
+        car +
+        house +
+        motorcycle +
+        other;
+
+    const totalField =
+    document.getElementById(
+        "monthly_loan_total"
+    );
+
+if(
+    car === 0 &&
+    house === 0 &&
+    motorcycle === 0 &&
+    other === 0
+){
+    totalField.value = "";
+}
+else{
+    totalField.value = total;
+}
+
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        [
+            "car_loan",
+            "house_loan",
+            "motorcycle_loan",
+            "other_loan"
+        ].forEach(function(id){
+
+            const field =
+                document.getElementById(id);
+
+            if(field){
+                field.addEventListener(
+                    "input",
+                    calculateMonthlyLoanTotal
+                );
+            }
+
+        });
+
+        calculateMonthlyLoanTotal();
+
+    }
+);
+
+</script>
+<script>
+
+function togglePaymentOtherBank(){
+
+    const bank =
+        document.getElementById(
+            "payment_bank_name"
+        );
+
+    const wrapper =
+        document.getElementById(
+            "payment_other_bank_wrapper"
+        );
+
+    if(bank.value === "Other"){
+        wrapper.style.display = "block";
+    }
+    else{
+        wrapper.style.display = "none";
+
+        document.getElementById(
+            "payment_other_bank_name"
+        ).value = "";
+    }
+
+}
+
+function toggleBalanceTransferOtherBank(){
+
+    const bank =
+        document.getElementById(
+            "balance_transfer_bank_name"
+        );
+
+    const wrapper =
+        document.getElementById(
+            "balance_transfer_other_bank_wrapper"
+        );
+
+    if(bank.value === "Other"){
+        wrapper.style.display = "block";
+    }
+    else{
+        wrapper.style.display = "none";
+
+        document.getElementById(
+            "balance_transfer_other_bank_name"
+        ).value = "";
+    }
+
+}
+
+document.addEventListener(
+    "DOMContentLoaded",
+    function(){
+
+        togglePaymentOtherBank();
+        toggleBalanceTransferOtherBank();
+
+        const paymentBank =
+            document.getElementById(
+                "payment_bank_name"
+            );
+
+        if(paymentBank){
+            paymentBank.addEventListener(
+                "change",
+                togglePaymentOtherBank
+            );
+        }
+
+        const balanceBank =
+            document.getElementById(
+                "balance_transfer_bank_name"
+            );
+
+        if(balanceBank){
+            balanceBank.addEventListener(
+                "change",
+                toggleBalanceTransferOtherBank
+            );
+        }
+
+    }
+);
+
+</script>
+{% endblock %}

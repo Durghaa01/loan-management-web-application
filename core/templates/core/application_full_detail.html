@@ -1,0 +1,567 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<style>
+.page-header{
+    background:linear-gradient(135deg,#0B3D91,#06295f);
+    color:white;
+    padding:26px;
+    border-radius:18px;
+    margin-bottom:22px;
+}
+
+.page-header h1{
+    margin:0;
+    font-size:32px;
+}
+
+.page-header p{
+    margin:8px 0 15px 0;
+    font-size:17px;
+    opacity:0.9;
+}
+</style>
+<div class="page-header">
+
+    <h1>
+        Full Application
+    </h1>
+
+    <p>
+        Complete application information
+    </p>
+
+    <div >
+
+        <button
+    type="button"
+    class="btn"
+    onclick="setLanguage('en')"
+    style="
+        background:white;
+        color:#0B3D91;
+        font-weight:bold;
+        margin-right:10px;
+    "
+>
+    English
+</button>
+            
+        
+
+        <button
+    type="button"
+    class="btn"
+    onclick="setLanguage('ms')"
+    style="
+        background:white;
+        color:#0B3D91;
+        font-weight:bold;
+    "
+>
+    Bahasa Melayu
+</button>
+            
+       
+
+    </div>
+
+</div>
+
+<div class="card">
+
+    <div
+    style="
+        background:#0B3D91;
+        color:white;
+        padding:12px 18px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-size:20px;
+        font-weight:bold;
+    "
+>
+   <span
+    data-en="Personal Information"
+    data-ms="Maklumat Peribadi"
+>
+    Personal Information
+</span>
+</div>
+<p>
+    <strong
+        data-en="Application Number:"
+        data-ms="Nombor Permohonan:"
+    >
+        Application Number:
+    </strong>
+
+    {{ app.application_number }}
+</p>
+
+    <p><strong
+        data-en="Full Name:"
+        data-ms="Nama Penuh:"
+    >
+        Full Name:
+    </strong> {{ app.full_name }}</p>
+
+    <p><strong
+        data-en="IC/Passport:"
+        data-ms="KP / Pasport:"
+    >
+        IC / Passport:
+    </strong> {{ app.ic_or_passport_no }}</p>
+
+    <p><strong
+        data-en="Marital Status:"
+        data-ms="Status Perkahwinan:"
+    >
+        Marital Status:
+    </strong> {{ app.marital_status }}
+    </p>
+
+    <p><strong
+        data-en="Home Address:"
+        data-ms="Alamat Rumah:"
+    >
+        Home Address:
+    </strong> {{ app.home_address }}
+    </p>
+
+    <p><strong
+        data-en="Phone Number 1:"
+        data-ms="Nombor Telefon 1:"
+    >
+        Phone Number 1:
+    </strong> {{ app.phone_number }}
+    </p>
+
+    <p><strong
+        data-en="Phone Number 2:"
+        data-ms="Nombor Telefon 2:"
+    >
+        Phone Number 2:
+    </strong> {% if app.phone_number_2 %}
+    {{ app.phone_number_2 }}
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+    </p>
+
+    <p><strong
+        data-en="Home Phone Number:"
+        data-ms="Nombor Telefon Rumah:"
+    >
+        Home Phone Number:
+    </strong> {% if app.home_phone_number %}
+    {{ app.home_phone_number }}
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+    </p>
+
+</div>
+
+<div class="card">
+
+    <div
+    style="
+        background:#0B3D91;
+        color:white;
+        padding:12px 18px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-size:20px;
+        font-weight:bold;
+    "
+>
+   <span
+    data-en="Employment Information"
+    data-ms="Maklumat Pekerjaan"
+>
+    Employment Information
+</span>
+</div>
+
+    <p><strong data-en="Employer Name:" data-ms="Nama Majikan:">
+        Employer Name:
+    </strong>
+        {{ app.employer_name }}
+    </p>
+
+    <p><strong data-en="Employer Address:" data-ms="Alamat Majikan:">
+        Employer Address:
+    </strong>
+        {{ app.employer_address }}
+    </p>
+
+    <p><strong data-en="Office Phone Number:" data-ms="No Telefon Pejabat:">
+        Office Phone Number:
+    </strong>
+        {{ app.office_phone_number }}
+    </p>
+
+    <p><strong data-en="Total Working Years:" data-ms="Jumlah Tahun Bekerja:">
+        Total Working Years:
+    </strong>
+        {{ app.total_working_years }}
+    </p>
+
+    <p><strong data-en="Net Salary After Deductions:" data-ms="Gaji Bersih Selepas Potongan:">
+        Net Salary After Deductions:
+    </strong>
+        {{ app.net_salary_after_deductions }}
+    </p>
+
+    <p><strong data-en="Salary Bank:" data-ms="Bank Gaji:">
+        Salary Bank:
+    </strong>
+        {{ app.salary_bank }}
+    </p>
+
+    {% if app.salary_bank_other %}
+    <p><strong data-en="Other Bank Name:" data-ms="Nama Bank Lain:">
+        Other Bank Name:
+    </strong>
+        {{ app.salary_bank_other }}
+    </p>
+    {% endif %}
+
+</div>
+
+<div class="card">
+
+    <div
+    style="
+        background:#0B3D91;
+        color:white;
+        padding:12px 18px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-size:20px;
+        font-weight:bold;
+    "
+>
+   <span
+    data-en="Other Income"
+    data-ms="Pendapatan Lain"
+>
+    Other Income
+   </span>
+</div>
+
+    <p>
+    <strong data-en="Other Income:" data-ms="Pendapatan Lain:">
+        Other Income:
+    </strong>
+
+    {% if app.has_other_income == "YES" %}
+        <span data-en="Yes" data-ms="Ya">Yes</span>
+
+{% elif app.has_other_income == "NO" %}
+    <span data-en="None" data-ms="Tiada">None</span>
+
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+{% if app.has_other_income == "YES" %}
+
+<p>
+    <strong
+        data-en="Other Income Name:"
+        data-ms="Nama Pendapatan Lain:"
+    >
+        Other Income Name:
+    </strong>
+
+    {{ app.other_income_name|default:"None" }}
+</p>
+
+<p>
+    <strong
+        data-en="Other Income Total:"
+        data-ms="Jumlah Pendapatan Lain:"
+    >
+        Other Income Total:
+    </strong>
+
+    {{ app.other_income_amount|default:"None" }}
+</p>
+
+{% endif %}
+</p>
+
+</div>
+
+<div class="card">
+
+    <div
+    style="
+        background:#0B3D91;
+        color:white;
+        padding:12px 18px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-size:20px;
+        font-weight:bold;
+    "
+>
+    <span
+    data-en="Spouse Information"
+    data-ms="Maklumat Pasangan"
+>
+    Spouse Information
+</span>
+</div>
+
+    {% if app.marital_status == "MARRIED" %}
+
+    <p><strong data-en="Spouse Full Name:" data-ms="Nama Penuh Pasangan:">
+        Spouse Full Name:
+    </strong>
+        {{ app.spouse_full_name }}
+    </p>
+
+    <p><strong data-en="Spouse IC/Passport:" data-ms="KP/Pasport Pasangan:">
+        Spouse IC/Passport:
+    </strong>
+        {{ app.spouse_ic_number }}
+    </p>
+
+    <p><strong data-en="Spouse Job:" data-ms="Pekerjaan Pasangan:">
+        Spouse Job:
+    </strong>
+        {{ app.spouse_job }}
+    </p>
+
+    <p><strong data-en="Spouse Income:" data-ms="Pendapatan Pasangan:">
+        Spouse Income:
+    </strong>
+        {{ app.spouse_income }}
+    </p>
+
+    <p><strong data-en="Number of Children:" data-ms="Bilangan Anak:">
+        Number of Children:
+    </strong>
+        {{ app.number_of_children }}
+    </p>
+
+    <p><strong data-en="Number of Working Children:" data-ms="Bilangan Anak Bekerja:">
+        Number of Working Children:
+    </strong>
+        {{ app.number_of_working_children }}
+    </p>
+
+    {% else %}
+
+    <p
+        data-en="Not Applicable"
+        data-ms="Tidak Berkenaan">
+        Not Applicable</p>
+
+    {% endif %}
+
+</div>
+
+<div class="card">
+
+    <div
+    style="
+        background:#0B3D91;
+        color:white;
+        padding:12px 18px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-size:20px;
+        font-weight:bold;
+    "
+>
+    <span
+    data-en="Existing Loan & Commitments"
+    data-ms="Pinjaman & Komitmen yang Sedia Ada"
+>
+    Existing Loan & Commitments
+</span>
+</div>
+
+    <p>
+        <strong data-en="Borrowed From Licensed Money Lender:" data-ms="Pinjaman Dari Peminjam Wang Berlesen:">
+            Borrowed From Licensed Money Lender:
+        </strong>
+           {% if app.borrowing_from_licensed_lender == "YES" %}
+    <span data-en="Yes" data-ms="Ya">Yes</span>
+
+{% elif app.borrowing_from_licensed_lender == "NO" %}
+    <span data-en="None" data-ms="Tiada">None</span>
+
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+
+{% if app.borrowing_from_licensed_lender == "YES" %}
+
+<p>
+    <strong
+        data-en="Outstanding Loan Balance:"
+        data-ms="Baki Pinjaman Wang Berlesen:"
+    >
+        Outstanding Loan Balance:
+    </strong>
+
+    {{ app.licensed_lender_balance|default:"None" }}
+</p>
+
+{% endif %}
+    </p>
+
+
+
+    <p>
+        <strong data-en="Car Loan Commitment:" data-ms="Komitmen Pinjaman Kereta:">
+            Car Loan Commitment:
+        </strong>
+       {% if app.car_loan_commitment %}
+    {{ app.car_loan_commitment }}
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+    </p>
+
+    <p>
+        <strong data-en="Home Loan Commitment:" data-ms="Komitmen Pinjaman Rumah:">
+            Home Loan Commitment:
+        </strong>
+        {% if app.house_loan_commitment %}
+    {{ app.house_loan_commitment }}
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+    </p>
+
+        <p>
+        <strong data-en="House Rental Commitment:" data-ms="Komitmen Sewa Rumah:">
+            House Rental Commitment:
+        </strong>
+       {% if app.house_rental_commitment %}
+{{ app.house_rental_commitment }}
+{% else %}
+<span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+    </p>
+
+    <p>
+        <strong data-en="Motorcycle Commitment:" data-ms="Komitmen Motosikal:">
+            Motorcycle Commitment:
+        </strong>
+        {% if app.motorcycle_commitment %}
+    {{ app.motorcycle_commitment }}
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+    </p>
+
+    <p>
+        <strong data-en="Other Commitment Name:" data-ms="Nama Komitmen Lain:">
+            Other Commitment Name:
+        </strong>
+        {% if app.other_commitment_name %}
+    {{ app.other_commitment_name }}
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+    </p>
+
+    <p>
+        <strong data-en="Other Commitment Amount:" data-ms="Amaun Komitmen Lain:">
+            Other Commitment Amount:
+        </strong>
+       {% if app.other_commitment_amount %}
+    {{ app.other_commitment_amount }}
+{% else %}
+    <span data-en="None" data-ms="Tiada">None</span>
+{% endif %}
+    </p>
+
+</div>
+
+<div class="card">
+
+    <div
+    style="
+        background:#0B3D91;
+        color:white;
+        padding:12px 18px;
+        border-radius:10px;
+        margin-bottom:20px;
+        font-size:20px;
+        font-weight:bold;
+    "
+>
+    <span
+    data-en="Loan Request"
+    data-ms="Permohonan Pinjaman"
+>
+    Loan Request
+</span>
+</div>
+
+    <p>
+        <strong data-en="Amount Wanted To Borrow:" data-ms="Amaun Ingin Dipinjam:">
+            Amount Wanted To Borrow:
+        </strong>
+        {{ app.amount_wanted_to_borrow }}
+    </p>
+
+    <p>
+        <strong data-en="Loan Reason:" data-ms="Sebab Pinjaman:">
+            Loan Reason:
+        </strong>
+        {{ app.loan_reason }}
+    </p>
+
+    <p>
+        <strong data-en="Introduced By:" data-ms="Diperkenalkan Oleh:">
+            Introduced By:
+        </strong>
+        {{ app.referred_by }}
+    </p>
+
+</div>
+
+<div
+    style="
+        text-align:right;
+        margin-top:20px;
+    "
+>
+
+    <a
+        href="{% url 'applications_list' %}"
+        class="btn"
+        style="background:#6b7280;"
+    >
+        Back to Applications
+    </a>
+
+</div>
+
+<script>
+function setLanguage(lang){
+
+    document.querySelectorAll("[data-en]").forEach(function(el){
+
+        if(lang === "en"){
+            el.textContent = el.getAttribute("data-en");
+        }
+        else{
+            el.textContent = el.getAttribute("data-ms");
+        }
+
+    });
+
+}
+</script>
+
+{% endblock %}

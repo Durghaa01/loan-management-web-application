@@ -1,0 +1,93 @@
+{% extends "core/public_base.html" %}
+
+{% block content %}
+
+<style>
+.success-card{
+    background:white;
+    max-width:650px;
+    margin:60px auto;
+    padding:40px;
+    border-radius:22px;
+    text-align:center;
+    box-shadow:0 10px 28px rgba(0,0,0,0.08);
+}
+
+.success-icon{
+    font-size:52px;
+    margin-bottom:18px;
+}
+
+.success-card h1{
+    color:#0B3D91;
+    margin-bottom:12px;
+}
+
+.success-card p{
+    font-size:18px;
+    color:#374151;
+}
+</style>
+
+<div class="success-card">
+
+    <div class="success-icon">✅</div>
+
+    {% if language == "ms" %}
+    <h1>Permohonan Berjaya Dihantar</h1>
+    {% else %}
+    <h1>Application Submitted</h1>
+    {% endif %}
+
+    {% if language == "ms" %}
+
+    <p>
+    Terima kasih. Permohonan anda telah berjaya dihantar.
+    </p>
+
+    <p>
+    Pihak kami akan menghubungi anda dalam masa terdekat.
+    </p>
+
+{% else %}
+
+    <p>
+    Thank you. Your application has been submitted successfully.
+    </p>
+
+    <p>
+    Our staff will contact you soon.
+    </p>
+
+{% endif %}
+
+</div>
+
+<script>
+if(window.history.replaceState){
+    window.history.replaceState(null, null, window.location.href);
+}
+</script>
+<script>
+window.history.pushState(
+    null,
+    "",
+    window.location.href
+);
+
+window.addEventListener(
+    "popstate",
+    function(){
+
+        const backUrl = "{{ back_url }}";
+
+        if(backUrl === "back"){
+            window.history.go(-2);
+        }else{
+            window.location.href = backUrl;
+        }
+
+    }
+);
+</script>
+{% endblock %}

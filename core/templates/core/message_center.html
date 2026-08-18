@@ -1,0 +1,818 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<style>
+.message-hero {
+    position: relative;
+    background: linear-gradient(135deg, #0B3D91, #06295f);
+    color: white;
+    padding: 30px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 12px 28px rgba(11, 61, 145, 0.22);
+}
+
+.message-hero h1 {
+    margin: 0 0 4px;
+    font-size: 32px;
+}
+
+.message-hero p {
+    margin: 0 0 10px;
+    font-size: 17px;
+    opacity: 0.92;
+}
+
+.create-template-btn {
+    background: #ffffff;
+    color: #0B3D91;
+    font-weight: 700;
+    text-decoration: none;
+    padding: 10px 18px;
+    border-radius: 10px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    border: 2px solid #ffffff;
+    transition: 0.2s;
+}
+
+.create-template-btn:hover {
+    background: #f5f5f5;
+    color: #0B3D91;
+}
+
+.delete-template-area {
+    position: absolute;
+    right: 30px;
+    bottom: 30px;
+}
+
+.template-section-card {
+    padding: 28px !important;
+}
+
+.template-section-card h2 {
+    margin-top: 0;
+    margin-bottom: 24px;
+}
+
+.template-section-card .template-grid {
+    margin-bottom: 6px;
+}
+
+.template-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+}
+
+.template-card-wrap {
+    position: relative;
+    min-width: 0;
+}
+
+.template-card {
+    display: block;
+    box-sizing: border-box;
+    height: 100%;
+    padding: 20px;
+    border: 1px solid #E5E7EB;
+    border-radius: 16px;
+    background: white;
+    color: #1F2937;
+    text-decoration: none;
+    box-shadow: 0 7px 20px rgba(0, 0, 0, 0.05);
+    transition: 0.2s ease;
+}
+
+.template-card:hover {
+    transform: translateY(-3px);
+    border-color: #E6D3A3;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.10);
+}
+
+.template-card.selected {
+    border: 2px solid #0B3D91;
+    background: #F4F7FC;
+}
+
+.template-card h3 {
+    margin: 0 0 8px;
+    color: #0B3D91;
+}
+
+.template-card p {
+    margin: 0;
+    color: #6B7280;
+}
+
+.template-delete-checkbox {
+    display: none;
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    padding: 0;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.message-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.form-control {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 9px;
+}
+
+.customer-search-wrap {
+    position: relative;
+}
+
+.customer-results {
+    display: none;
+    position: absolute;
+    z-index: 20;
+    width: 100%;
+    max-height: 240px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #D1D5DB;
+    border-radius: 9px;
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.customer-result {
+    padding: 11px 12px;
+    cursor: pointer;
+    border-bottom: 1px solid #F1F5F9;
+}
+
+.customer-result:hover {
+    background: #F4F7FC;
+}
+
+.customer-result:last-child {
+    border-bottom: none;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.preview-box {
+    white-space: pre-wrap;
+    background: #F9FAFB;
+    padding: 18px;
+    border: 1px solid #D1D5DB;
+    border-radius: 10px;
+    line-height: 1.6;
+}
+
+.message-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 18px;
+}
+
+@media (max-width: 760px) {
+    .message-form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .message-hero h1 {
+        font-size: 28px;
+    }
+
+    .delete-template-area {
+        position: static;
+        margin-top: 10px;
+    }
+
+    .template-section-card {
+        padding: 20px !important;
+    }
+}
+</style>
+
+<div class="message-hero">
+    <h1>Message Center</h1>
+    <p>Generate and prepare WhatsApp messages</p>
+
+    <a
+        href="{% url 'message_template_create' %}"
+        class="create-template-btn"
+    >
+        + Create Template
+    </a>
+    <div class="delete-template-area">
+        <button
+            id="deleteTemplateButton"
+            type="button"
+            class="btn"
+            onclick="toggleTemplateDeleteMode()"
+            style="
+                background:#DC2626;
+                color:white;
+                font-weight:bold;
+            "
+        >
+            Delete Template
+        </button>
+    </div>
+</div>
+
+<div class="card template-section-card">
+    <h2>Select Template</h2>
+
+    <div class="template-grid">
+        {% for template in templates %}
+            <div
+                class="template-card-wrap"
+                {% if template.key == "USER" %}
+                    data-deletable="true"
+                {% endif %}
+            >
+                {% if template.key == "USER" %}
+                    <input
+                        type="checkbox"
+                        class="template-delete-checkbox"
+                        name="selected_template"
+                        value="{{ template.id }}"
+                        data-title="{{ template.title }}"
+                        data-language="{{ template.get_language_display }}"
+                        onclick="event.stopPropagation();"
+                    >
+                {% endif %}
+
+                <a
+                    href="?template={{ template.id }}"
+                    class="template-card {% if selected and selected.id == template.id %}selected{% endif %}"
+                >
+                    <h3>{{ template.title }}</h3>
+
+                    <p>
+                        {{ template.get_language_display }}
+
+                        {% if template.key == "USER" %}
+                            · Created Template
+                        {% else %}
+                            · Built-in
+                        {% endif %}
+                    </p>
+                </a>
+            </div>
+        {% empty %}
+            <p>No active message templates are available.</p>
+        {% endfor %}
+    </div>
+</div>
+
+<div
+    id="deleteTemplateMessagePopup"
+    class="message-popup"
+    style="display:none;"
+>
+    <div class="message-box error">
+        Select at least one created template to delete.
+    </div>
+</div>
+
+{% if selected %}
+<div class="card">
+    <h2>{{ selected.title }}</h2>
+
+    <form method="get" id="messageGenerateForm">
+        <input
+            type="hidden"
+            name="template"
+            value="{{ selected.id }}"
+        >
+
+        <input
+            type="hidden"
+            name="generate"
+            value="1"
+        >
+
+        <input
+            type="hidden"
+            name="customer_id"
+            id="customerId"
+            value="{{ customer_id }}"
+        >
+
+        <div class="message-form-grid">
+            <div class="form-group">
+                <label>Date</label>
+
+                <input
+                    type="text"
+                    class="form-control"
+                    value="{{ current_date }}"
+                    readonly
+                >
+            </div>
+
+            {% if selected.key != "PRE_REGISTER" %}
+            <div class="form-group">
+                <label>Search Customer (Optional)</label>
+
+                <div class="customer-search-wrap">
+                    <input
+                        type="text"
+                        id="customerSearch"
+                        class="form-control"
+                        placeholder="Search by name or IC number"
+                        autocomplete="off"
+                    >
+
+                    <div
+                        id="customerResults"
+                        class="customer-results"
+                    ></div>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="form-group">
+                <label>Name</label>
+
+                <input
+                    type="text"
+                    name="customer_name"
+                    id="customerName"
+                    class="form-control"
+                    value="{{ customer_name }}"
+                    required
+                >
+            </div>
+            <div class="form-group">
+                <label>Phone Number</label>
+
+                <input
+                    type="tel"
+                    name="phone"
+                    id="customerPhone"
+                    class="form-control"
+                    value="{{ phone }}"
+                    placeholder="Example: 0123456789"
+                    required
+                >
+            </div>
+
+            {% if selected.key == "CUSTOM" %}
+            <div class="form-group full-width">
+                <label>Custom Message</label>
+
+                <textarea
+                    name="custom_message"
+                    id="customMessage"
+                    rows="6"
+                    class="form-control"
+                    required
+                >{{ custom_message }}</textarea>
+            </div>
+            {% endif %}
+
+            {% if selected.key == "USER" and "{AMOUNT}" in selected.body %}
+            <div class="form-group">
+                <label>Amount</label>
+
+                <input
+                    type="text"
+                    name="amount"
+                    id="messageAmount"
+                    class="form-control"
+                    value="{{ amount }}"
+                    placeholder="Example: 250.00"
+                    required
+                >
+            </div>
+            {% endif %}
+
+            {% if selected.key == "USER" and "{DUE_DATE}" in selected.body %}
+            <div class="form-group">
+                <label>Due Date</label>
+
+                <input
+                    type="date"
+                    name="due_date"
+                    id="messageDueDate"
+                    class="form-control"
+                    value="{{ due_date }}"
+                    required
+                >
+            </div>
+            {% endif %}
+
+            {% if selected.key == "USER" and "{CUSTOM_MESSAGE}" in selected.body %}
+            <div class="form-group full-width">
+                <label>Additional Message</label>
+
+                <textarea
+                    name="custom_message"
+                    id="customMessage"
+                    rows="5"
+                    class="form-control"
+                    required
+                >{{ custom_message }}</textarea>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn">
+                Generate Message
+            </button>
+
+            <button
+                type="button"
+                class="btn"
+                style="
+                    background:#6B7280;
+                    color:white;
+                "
+                onclick="clearMessageForm()"
+            >
+                Clear
+            </button>
+        </div>
+    </form>
+</div>
+{% endif %}
+
+{% if selected %}
+<div class="card" id="previewCard">
+    <h2>Preview Message</h2>
+
+    {% if rendered_message %}
+        <div id="messagePreview" class="preview-box">
+            {{ rendered_message }}
+        </div>
+
+        <div class="message-actions">
+            <button
+                type="button"
+                class="btn"
+                onclick="copyMessage()"
+            >
+                Copy Message
+            </button>
+
+            {% if whatsapp_link %}
+                <a
+                    href="{{ whatsapp_link }}"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="btn"
+                >
+                    Open WhatsApp
+                </a>
+            {% endif %}
+        </div>
+    {% else %}
+        <p>Complete the required fields and generate the message</p>
+    {% endif %}
+</div>
+{% endif %}
+
+{{ customers_data|json_script:"customers-data" }}
+
+<div
+    id="deleteTemplateModal"
+    style="
+        display:none;
+        position:fixed;
+        inset:0;
+        background:rgba(0,0,0,0.5);
+        justify-content:center;
+        align-items:center;
+        z-index:9999;
+    "
+>
+    <div
+        style="
+            background:white;
+            padding:25px;
+            border-radius:16px;
+            width:min(430px, 90%);
+            text-align:center;
+        "
+    >
+        <h3>Delete Message Template</h3>
+
+        <p
+            id="deleteTemplateText"
+            style="
+                white-space:pre-line;
+                text-align:left;
+                display:inline-block;
+            "
+        ></p>
+
+        <div style="margin-top:18px;">
+            <button
+                type="button"
+                onclick="closeTemplateDeleteModal()"
+                class="btn"
+                style="
+                    background:#6B7280;
+                    color:white;
+                "
+            >
+                Cancel
+            </button>
+
+            <form
+                id="deleteTemplateForm"
+                method="post"
+                action="{% url 'bulk_delete_message_templates' %}"
+                style="display:inline;"
+            >
+                {% csrf_token %}
+
+                <input
+                    type="hidden"
+                    name="template_ids"
+                    id="selectedTemplateIds"
+                >
+
+                <button
+                    type="submit"
+                    class="btn"
+                    style="
+                        background:#DC2626;
+                        color:white;
+                    "
+                >
+                    Confirm Delete
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+const customers = JSON.parse(
+    document.getElementById("customers-data").textContent
+);
+
+const searchInput = document.getElementById("customerSearch");
+const resultsBox = document.getElementById("customerResults");
+const customerId = document.getElementById("customerId");
+const customerName = document.getElementById("customerName");
+const customerPhone = document.getElementById("customerPhone");
+
+if (searchInput && resultsBox) {
+    searchInput.addEventListener("input", function() {
+        const query = this.value.trim().toLowerCase();
+
+        resultsBox.innerHTML = "";
+
+        if (query.length < 2) {
+            resultsBox.style.display = "none";
+            return;
+        }
+
+        const matches = customers
+            .filter(function(customer) {
+                return (
+                    customer.name.toLowerCase().includes(query) ||
+                    customer.ic.toLowerCase().includes(query)
+                );
+            })
+            .slice(0, 10);
+
+        if (matches.length === 0) {
+            resultsBox.innerHTML =
+                '<div class="customer-result">No customer found</div>';
+
+            resultsBox.style.display = "block";
+            return;
+        }
+
+        matches.forEach(function(customer) {
+            const item = document.createElement("div");
+            item.className = "customer-result";
+
+            item.textContent =
+                customer.name + " — " + customer.ic;
+
+            item.addEventListener("click", function() {
+                customerId.value = customer.id;
+                customerName.value = customer.name;
+                customerPhone.value = customer.phone;
+
+                searchInput.value =
+                    customer.name + " — " + customer.ic;
+
+                resultsBox.style.display = "none";
+            });
+
+            resultsBox.appendChild(item);
+        });
+
+        resultsBox.style.display = "block";
+    });
+
+    document.addEventListener("click", function(event) {
+        if (!event.target.closest(".customer-search-wrap")) {
+            resultsBox.style.display = "none";
+        }
+    });
+}
+function clearSelectedCustomerReference() {
+    if (customerId) {
+        customerId.value = "";
+    }
+
+    if (searchInput) {
+        searchInput.value = "";
+    }
+}
+
+if (customerName) {
+    customerName.addEventListener(
+        "input",
+        clearSelectedCustomerReference
+    );
+}
+
+if (customerPhone) {
+    customerPhone.addEventListener(
+        "input",
+        clearSelectedCustomerReference
+    );
+}
+
+function clearMessageForm() {
+    /*
+    Reload using only the selected template ID.
+
+    This clears:
+    - Selected customer
+    - Customer name
+    - Phone
+    - Custom/additional message
+    - Amount
+    - Due date
+    - Generated preview
+    It does not create a popup, Recent Activity,
+    or bell notification.
+    */
+    window.location.href = "?template={{ selected.id }}";
+}
+
+let templateDeleteMode = false;
+
+function toggleTemplateDeleteMode() {
+    const deletableCards = document.querySelectorAll(
+        '.template-card-wrap[data-deletable="true"]'
+    );
+
+    if (deletableCards.length === 0) {
+        showDeleteTemplateError(
+            "There are no created templates available to delete."
+        );
+        return;
+    }
+
+    if (!templateDeleteMode) {
+        templateDeleteMode = true;
+
+        deletableCards.forEach(function(card) {
+            const checkbox = card.querySelector(
+                ".template-delete-checkbox"
+            );
+
+            checkbox.style.display = "block";
+        });
+
+        return;
+    }
+
+    const selectedTemplates = document.querySelectorAll(
+        'input[name="selected_template"]:checked'
+    );
+
+    if (selectedTemplates.length === 0) {
+        showDeleteTemplateError(
+            "Select at least one created template to delete."
+        );
+        return;
+    }
+
+    let selectedText = "";
+    const selectedIds = [];
+
+    selectedTemplates.forEach(function(template) {
+        selectedText +=
+            "• " +
+            template.dataset.title +
+            " (" +
+            template.dataset.language +
+            ")\n";
+
+        selectedIds.push(template.value);
+    });
+
+    document.getElementById("deleteTemplateText").innerText =
+        "Are you sure you want to delete the following template(s)?\n\n" +
+        selectedText;
+
+    document.getElementById("selectedTemplateIds").value =
+        selectedIds.join(",");
+
+    document.getElementById("deleteTemplateModal").style.display =
+        "flex";
+}
+
+function showDeleteTemplateError(text) {
+    const popup = document.getElementById(
+        "deleteTemplateMessagePopup"
+    );
+
+    popup.querySelector(".message-box").innerText = text;
+    popup.style.display = "block";
+
+    setTimeout(function() {
+        popup.style.display = "none";
+    }, 3000);
+}
+
+function closeTemplateDeleteModal() {
+    document.getElementById(
+        "deleteTemplateModal"
+    ).style.display = "none";
+
+    templateDeleteMode = false;
+
+    document.querySelectorAll(
+        '.template-card-wrap[data-deletable="true"]'
+    ).forEach(function(card) {
+        const checkbox = card.querySelector(
+            ".template-delete-checkbox"
+        );
+
+        checkbox.style.display = "none";
+        checkbox.checked = false;
+    });
+}
+
+function copyMessage() {
+    const preview = document.getElementById("messagePreview");
+
+    if (!preview) {
+        return;
+    }
+
+    navigator.clipboard.writeText(
+        preview.innerText.trim()
+    ).then(function() {
+        const popup = document.createElement("div");
+        popup.className = "message-popup";
+
+        popup.innerHTML =
+            '<div class="message-box success">' +
+            'Message copied successfully' +
+            '</div>';
+
+        document.body.appendChild(popup);
+
+        setTimeout(function() {
+            popup.remove();
+        }, 2500);
+    });
+}
+</script>
+
+{% endblock %}

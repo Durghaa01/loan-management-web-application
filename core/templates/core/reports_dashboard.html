@@ -1,0 +1,72 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>Reports Dashboard</h2>
+    <p>View internal, official, and activity summaries.</p>
+</div>
+
+<div class="card">
+    <form method="get">
+        <label for="from">From</label><br><br>
+        <input type="date" name="from" id="from" value="{{ date_from }}" style="padding:10px; width:250px;">
+
+        <br><br>
+
+        <label for="to">To</label><br><br>
+        <input type="date" name="to" id="to" value="{{ date_to }}" style="padding:10px; width:250px;">
+
+        <br><br>
+        <button type="submit" class="btn">Filter</button>
+    </form>
+</div>
+
+<div class="card">
+    <h3>Internal Summary</h3>
+
+    {% if internal %}
+        <pre style="white-space:pre-wrap; background:#f9fafb; padding:14px; border:1px solid #ddd; border-radius:8px;">{{ internal }}</pre>
+    {% else %}
+        <p>No internal summary available.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Official Summary</h3>
+
+    {% if official %}
+        <pre style="white-space:pre-wrap; background:#f9fafb; padding:14px; border:1px solid #ddd; border-radius:8px;">{{ official }}</pre>
+    {% else %}
+        <p>No official summary available.</p>
+    {% endif %}
+</div>
+
+<div class="card">
+    <h3>Recent Activity</h3>
+
+    {% if activities %}
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr style="background:#f3f4f6;">
+                    <th style="padding:12px; border:1px solid #ddd; text-align:left;">Date</th>
+                    <th style="padding:12px; border:1px solid #ddd; text-align:left;">Action</th>
+                    <th style="padding:12px; border:1px solid #ddd; text-align:left;">Meta</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in activities %}
+                <tr>
+                    <td style="padding:12px; border:1px solid #ddd;">{{ item.created_at }}</td>
+                    <td style="padding:12px; border:1px solid #ddd;">{{ item.action }}</td>
+                    <td style="padding:12px; border:1px solid #ddd;">{{ item.meta }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No activity found.</p>
+    {% endif %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>Receipt Detail</h2>
+    <p>Receipt information.</p>
+</div>
+
+<div class="card">
+    <p><strong>Receipt Number:</strong> {{ receipt.receipt_number }}</p>
+    <p><strong>Customer:</strong> {{ receipt.customer.full_name }}</p>
+    <p><strong>Agreement:</strong> {{ receipt.agreement.agreement_number }}</p>
+    <p><strong>Receipt Date:</strong> {{ receipt.receipt_date }}</p>
+    <p><strong>Principal Amount:</strong> {{ receipt.principal_amount }}</p>
+    <p><strong>Interest Amount:</strong> {{ receipt.interest_amount }}</p>
+    <p><strong>Total Amount:</strong> {{ receipt.total_amount }}</p>
+    <p><strong>Method:</strong> {{ receipt.method }}</p>
+    <p><strong>Reference Note:</strong> {{ receipt.reference_note|default:"-" }}</p>
+    <p><strong>Created By:</strong> {{ receipt.created_by }}</p>
+    <p><strong>Created At:</strong> {{ receipt.created_at }}</p>
+</div>
+
+{% endblock %}

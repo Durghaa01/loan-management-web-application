@@ -1,0 +1,419 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<style>
+.page-header{
+    background:linear-gradient(135deg, #0B3D91, #06295f);
+    color:white;
+    padding:26px;
+    border-radius:18px;
+    margin-bottom:22px;
+}
+
+.page-header h1{
+    margin:0;
+    font-size:32px;
+}
+
+.page-header p{
+    margin:8px 0 0;
+    font-size:17px;
+    opacity:0.9;
+}
+
+.table-card{
+    background:white;
+    padding:24px;
+    border-radius:18px;
+    box-shadow:0 8px 22px rgba(0,0,0,0.06);
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#f3f4f6;
+    padding:14px;
+    text-align:left;
+    border-bottom:1px solid #e5e7eb;
+}
+
+td{
+    padding:14px;
+    border-bottom:1px solid #f1f5f9;
+}
+</style>
+
+<div class="page-header">
+
+    <h1>
+        Customers
+    </h1>
+
+    <p>
+        View and manage registered customers
+    </p>
+
+    <br>
+
+    <a
+        href="{% url 'customer_create' %}"
+        class="btn"
+        style="
+            background:white;
+            color:#0B3D91;
+            text-decoration:none;
+            font-weight:bold;
+        "
+    >
+        + New Customer
+    </a>
+
+    <a
+        href="{% url 'customers_list' %}"
+        class="btn"
+        style="
+            background:white;
+            color:#0B3D91;
+            text-decoration:none;
+            font-weight:bold;
+            margin-left:10px;
+        "
+    >
+        ⟳ Refresh
+    </a>
+
+    <div style="text-align:right; margin-top:-40px;">
+
+<button
+    id="deleteCustomerButton"
+    type="button"
+    class="btn"
+    onclick="toggleDeleteMode()"
+    style="
+        background:#DC2626;
+        color:white;
+        font-weight:bold;
+    "
+>
+    Delete Customer
+</button>
+
+</div>
+
+</div>
+
+<div
+    style="
+        background:white;
+        padding:18px;
+        border-radius:16px;
+        margin-bottom:20px;
+        box-shadow:0 8px 22px rgba(0,0,0,0.06);
+    "
+>
+    <form method="GET" style="display:flex; gap:10px;">
+
+        <input
+            type="text"
+            name="q"
+            value="{{ query }}"
+            placeholder="Search by IC/Passport, customer name, or phone number..."
+            style="
+                flex:1;
+                padding:12px;
+                border:1px solid #d1d5db;
+                border-radius:10px;
+            "
+        >
+
+        <button type="submit" class="btn">
+            Search
+        </button>
+
+        <a
+            href="{% url 'customers_list' %}"
+            class="btn"
+            style="background:#6b7280; text-decoration:none;"
+        >
+            Clear
+        </a>
+
+    </form>
+</div>
+
+<div class="table-card">
+    {% if customers %}
+
+    <div id="deleteMessagePopup" class="message-popup" style="display:none;">
+    <div class="message-box error">
+        Select at least one customer to delete
+    </div>
+</div>
+        <table style="width:100%; border-collapse:collapse;">
+            <thead>
+                <tr>
+    <th
+    class="delete-column"
+    style="display:none;"
+>
+    Select
+</th>
+
+    <th>
+        Customer No
+    </th>
+
+    <th>
+        Full Name
+    </th>
+
+    <th>
+        IC/Passport
+    </th>
+
+    <th>
+        Phone
+    </th>
+
+    <th>
+        Status
+    </th>
+
+    <th>
+        Created
+    </th>
+
+    <th>
+        Action
+    </th>
+
+</tr>
+            </thead>
+            <tbody>
+                {% for customer in customers %}
+                <tr>
+                        <td
+    class="delete-column"
+    style="display:none;"
+>
+    <input
+        type="checkbox"
+        name="selected_customer"
+        value="{{ customer.id }}"
+        data-customer-no="{{ customer.customer_reference }}"
+        data-name="{{ customer.full_name }}"
+    >
+</td>
+
+    <td>
+        {{ customer.customer_reference }}
+    </td>
+
+    <td>
+        {{ customer.full_name }}
+    </td>
+
+    <td>
+        {{ customer.ic_number }}
+    </td>
+
+    <td>
+        {{ customer.phone|default:"-" }}
+    </td>
+
+    <td>
+
+        {% if customer.is_active %}
+
+            <span
+                style="
+                    background:#DCFCE7;
+                    color:#166534;
+                    padding:6px 12px;
+                    border-radius:999px;
+                    font-weight:bold;
+                    font-size:13px;
+                "
+            >
+                ACTIVE
+            </span>
+
+        {% else %}
+
+            <span
+                style="
+                    background:#FEE2E2;
+                    color:#991B1B;
+                    padding:6px 12px;
+                    border-radius:999px;
+                    font-weight:bold;
+                    font-size:13px;
+                "
+            >
+                INACTIVE
+            </span>
+
+        {% endif %}
+
+    </td>
+
+    <td>
+        {{ customer.created_at }}
+    </td>
+
+    <td>
+
+        <a
+            class="btn"
+            href="{% url 'customer_summary' customer_id=customer.id %}"
+        >
+            View
+        </a>
+
+    </td>
+
+
+</tr>
+
+       
+         
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+       <div style="
+    text-align:center;
+    padding:40px;
+    color:#6B7280;
+">
+    <h3>No customers found</h3>
+
+    <p>
+        No customer records have been created yet
+    </p>
+</div>
+    {% endif %}
+</div>
+<div id="deleteModal" style="
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(0,0,0,0.5);
+    justify-content:center;
+    align-items:center;
+    z-index:9999;
+">
+    <div style="
+        background:white;
+        padding:25px;
+        border-radius:16px;
+        width:430px;
+        text-align:center;
+    ">
+        <h3>Delete Customer</h3>
+
+        <p id="deleteText" style="
+            white-space:pre-line;
+            text-align:left;
+            display:inline-block;
+        "></p>
+
+        <button type="button" onclick="closeDeleteModal()" class="btn" style="background:#6b7280;">
+            Cancel
+        </button>
+
+        <form id="deleteForm" method="POST" style="display:inline;">
+            {% csrf_token %}
+
+            <input type="hidden" name="customer_ids" id="customerIds">
+
+            <button type="submit" class="btn" style="background:#dc2626;">
+                Confirm Delete
+            </button>
+        </form>
+    </div>
+</div>
+<script>
+let deleteMode = false;
+
+function toggleDeleteMode(){
+
+    if(!deleteMode){
+
+        deleteMode = true;
+
+        document.querySelectorAll(".delete-column").forEach(function(el){
+            el.style.display = "";
+        });
+
+        return;
+    }
+
+    const selectedCustomers = document.querySelectorAll(
+        'input[name="selected_customer"]:checked'
+    );
+
+    if(selectedCustomers.length === 0){
+
+        document.getElementById("deleteMessagePopup").style.display = "block";
+
+        setTimeout(function(){
+            document.getElementById("deleteMessagePopup").style.display = "none";
+        }, 3000);
+
+        return;
+    }
+
+    let selectedText = "";
+    let selectedIds = [];
+
+    selectedCustomers.forEach(function(customer){
+
+        selectedText +=
+            "• " +
+            customer.getAttribute("data-customer-no") +
+            " - " +
+            customer.getAttribute("data-name") +
+            "\n";
+
+        selectedIds.push(customer.value);
+    });
+
+    document.getElementById("deleteText").innerText =
+        "Are you sure you want to delete the following customer(s)?\n\n" +
+        selectedText;
+
+    document.getElementById("customerIds").value =
+        selectedIds.join(",");
+
+    document.getElementById("deleteForm").action =
+        "/customers/bulk-delete/";
+
+    document.getElementById("deleteModal").style.display =
+        "flex";
+}
+
+function closeDeleteModal(){
+
+    document.getElementById("deleteModal").style.display = "none";
+
+    deleteMode = false;
+
+    document.querySelectorAll(".delete-column").forEach(function(el){
+        el.style.display = "none";
+    });
+
+    document.querySelectorAll('input[name="selected_customer"]').forEach(function(el){
+        el.checked = false;
+    });
+}
+</script>
+
+{% endblock %}

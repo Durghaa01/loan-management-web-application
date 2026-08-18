@@ -1,0 +1,356 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<style>
+
+.dash-hero{
+    background:linear-gradient(135deg, #0B3D91, #06295f);
+    color:white;
+
+    padding:30px;
+
+    border-radius:20px;
+
+    margin-bottom:24px;
+
+    box-shadow:0 12px 28px rgba(11,61,145,0.22);
+}
+
+.dash-hero h1{
+    margin:0;
+    font-size:34px;
+}
+
+.dash-hero p{
+    margin-top:10px;
+    font-size:18px;
+    opacity:0.92;
+}
+
+.stats-grid{
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(220px, 1fr));
+
+    gap:18px;
+
+    margin-bottom:24px;
+}
+
+.stat-card{
+    background:white;
+
+    border-radius:18px;
+
+    padding:22px;
+
+    box-shadow:0 8px 22px rgba(0,0,0,0.06);
+
+    border-left:5px solid #E6D3A3;
+}
+
+.stat-title{
+    color:#6B7280;
+    font-size:16px;
+    margin-bottom:10px;
+}
+
+.stat-value{
+    font-size:30px;
+    font-weight:bold;
+    color:#0B3D91;
+}
+
+.module-title{
+    margin:0 0 18px;
+    font-size:26px;
+    color:#1F2937;
+}
+
+.module-grid{
+    display:grid;
+
+    grid-template-columns:
+    repeat(auto-fit, minmax(240px, 1fr));
+
+    gap:20px;
+}
+.module-card{
+    background:white;
+
+    border-radius:20px;
+
+    padding:24px;
+
+    text-decoration:none;
+
+    color:#1F2937;
+
+    box-shadow:0 8px 22px rgba(0,0,0,0.06);
+
+    border:1px solid #E5E7EB;
+
+    transition:0.2s ease;
+}
+
+.module-card:hover{
+    transform:translateY(-4px);
+
+    box-shadow:0 12px 30px rgba(0,0,0,0.12);
+
+    border-color:#E6D3A3;
+}
+
+.module-icon{
+    width:48px;
+    height:48px;
+
+    border-radius:14px;
+
+    background:#EEF4FF;
+
+    color:#0B3D91;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:24px;
+
+    margin-bottom:14px;
+}
+
+.module-card h3{
+    margin:0 0 8px;
+
+    color:#0B3D91;
+
+    font-size:22px;
+}
+
+.module-card p{
+    margin:0;
+
+    color:#555;
+
+    font-size:16px;
+
+    line-height:1.45;
+}
+
+.quick-section{
+    display:grid;
+
+    grid-template-columns:2fr 1fr;
+
+    gap:20px;
+
+    margin-top:24px;
+}
+
+.panel{
+    background:white;
+
+    border-radius:20px;
+
+    padding:24px;
+
+    box-shadow:0 8px 22px rgba(0,0,0,0.06);
+}
+
+.panel h3{
+    margin-top:0;
+
+    color:#0B3D91;
+}
+.activity-item{
+    padding:14px 0;
+
+    border-bottom:1px solid #E5E7EB;
+}
+
+.activity-item:last-child{
+    border-bottom:none;
+}
+
+.activity-title{
+    font-weight:bold;
+    margin-bottom:4px;
+}
+
+.activity-meta{
+    color:#6B7280;
+    font-size:15px;
+}
+
+.quick-actions{
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.quick-btn{
+    background:#0B3D91;
+    color:white;
+
+    padding:14px;
+
+    border-radius:12px;
+
+    text-align:center;
+
+    font-weight:bold;
+
+    transition:0.2s ease;
+}
+
+.quick-btn:hover{
+    opacity:0.92;
+}
+
+</style>
+
+
+<div class="dash-hero">
+
+    <h1>
+
+        {% if active_company == "A" %}
+            Company A Dashboard
+        {% elif active_company == "B" %}
+            Company B Dashboard
+        {% else %}
+            System Name Dashboard
+        {% endif %}
+    </h1>
+
+    <p>
+        Welcome,
+        <strong>{{ user.full_name|default:user.username }}</strong>
+    </p>
+
+</div>
+
+
+<div class="stats-grid">
+
+    <div class="stat-card">
+        <div class="stat-title">Pending Applications</div>
+        <div class="stat-value">{{ pending_applications_count }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-title">Total Customers</div>
+        <div class="stat-value">{{ total_customers_count }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-title">Agreements Today</div>
+        <div class="stat-value">{{ agreements_today_count }}</div>
+    </div>
+
+    <div class="stat-card">
+        <div class="stat-title">Today</div>
+        <div class="stat-value" id="liveDateTime" style="font-size:20px;">
+            Loading...
+        </div>
+    </div>
+
+</div>
+
+
+
+
+
+
+<div class="quick-section">
+
+    <div class="panel">
+
+        <h3>Recent Activity</h3>
+
+        <div id="recent-activity-list">
+
+        {% for activity in recent_activities %}
+
+        <div class="activity-item">
+
+        <div class="activity-title">
+        {{ activity.action }}
+        </div>
+
+        <div class="activity-meta">
+
+        {{ activity.created_at|date:"j M Y • g:i A" }}
+
+        {% if activity.user %}
+            • {{ activity.user.full_name|default:activity.user.email }}
+        {% endif %}
+
+    </div>
+</div>
+
+{% empty %}
+
+<div class="activity-item">
+
+    <div class="activity-title">
+        No recent activity
+    </div>
+
+</div>
+
+{% endfor %}
+    </div>
+    </div>
+
+    {%if request.user.is_superuser %}
+    <div class="panel">
+
+        <h3>Quick Actions</h3>
+
+        <div class="quick-actions">
+
+            <a href="/switch-company/A" class="quick-btn">
+                Switch to Company A
+            </a>
+
+             <a href="/switch-company/B" class="quick-btn">
+                Switch to Company B
+            </a>
+
+               <a href="/switch-company/ALL" class="quick-btn">
+                View All Companies
+            </a>
+
+        </div>
+    
+    </div>
+    {% endif %}
+</div>
+<script>
+function updateDateTime(){
+    const now = new Date();
+
+    const options = {
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
+        hour: "numeric",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: true
+    };
+
+    document.getElementById("liveDateTime").innerText =
+        now.toLocaleString("en-MY", options);
+}
+
+updateDateTime();
+setInterval(updateDateTime, 1000);
+</script>
+
+{% endblock %}

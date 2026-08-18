@@ -1,0 +1,290 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<style>
+.template-hero {
+    background: linear-gradient(135deg, #0B3D91, #06295f);
+    color: white;
+    padding: 24px 30px;
+    border-radius: 20px;
+    margin-bottom: 24px;
+    box-shadow: 0 12px 28px rgba(11, 61, 145, 0.22);
+}
+
+.template-hero h1 {
+    margin: 0 0 4px;
+    font-size: 32px;
+}
+
+.template-hero p {
+    margin: 0;
+    font-size: 17px;
+    opacity: 0.92;
+}
+
+.template-form-group {
+    margin-bottom: 18px;
+}
+
+.template-form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+}
+
+.template-form-control {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 11px 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 9px;
+}
+
+.placeholder-box {
+    padding: 15px;
+    border-radius: 10px;
+    background: #F8FAFC;
+    margin-bottom: 20px;
+    line-height: 1.8;
+}
+
+.form-actions {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.placeholder-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+    gap: 10px;
+}
+
+.placeholder-button {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 4px;
+
+    padding: 12px;
+    border: 1px solid #D1D5DB;
+    border-radius: 9px;
+    background: white;
+    cursor: pointer;
+    text-align: left;
+}
+
+.placeholder-button:hover {
+    background: #F4F7FC;
+    border-color: #0B3D91;
+}
+
+.placeholder-button code {
+    color: #0B3D91;
+    font-weight: 700;
+}
+
+.placeholder-button span {
+    color: #64748B;
+    font-size: 14px;
+}
+
+.placeholder-note {
+    margin: 14px 0 0;
+    padding: 10px 12px;
+    background: white;
+    border-left: 4px solid #0B3D91;
+    border-radius: 6px;
+    color: #475569;
+}
+</style>
+
+<div class="template-hero">
+    <h1>Create Message Template</h1>
+    <p>Create a reusable WhatsApp message template</p>
+</div>
+
+<div class="card">
+    <div class="placeholder-box">
+    <strong>How to use placeholders</strong>
+
+    <p style="margin:8px 0 14px; color:#475569;">
+        Click a information below to insert it into the Message Body.
+        The system will automatically replace it with the correct details
+        when the message is generated
+    </p>
+
+    <div class="placeholder-list">
+        <button
+            type="button"
+            class="placeholder-button"
+            onclick="insertPlaceholder('{DATE}')"
+        >
+            <code>{DATE}</code>
+            <span>Current date</span>
+        </button>
+
+        <button
+            type="button"
+            class="placeholder-button"
+            onclick="insertPlaceholder('{CUSTOMER_NAME}')"
+        >
+            <code>{CUSTOMER_NAME}</code>
+            <span>Customer name</span>
+        </button>
+
+        <button
+            type="button"
+            class="placeholder-button"
+            onclick="insertPlaceholder('{PHONE}')"
+        >
+            <code>{PHONE}</code>
+            <span>Phone number</span>
+        </button>
+
+        <button
+            type="button"
+            class="placeholder-button"
+            onclick="insertPlaceholder('{AMOUNT}')"
+        >
+            <code>{AMOUNT}</code>
+            <span>Payment amount</span>
+        </button>
+
+        <button
+            type="button"
+            class="placeholder-button"
+            onclick="insertPlaceholder('{DUE_DATE}')"
+        >
+            <code>{DUE_DATE}</code>
+            <span>Payment due date</span>
+        </button>
+
+        <button
+            type="button"
+            class="placeholder-button"
+            onclick="insertPlaceholder('{CUSTOM_MESSAGE}')"
+        >
+            <code>{CUSTOM_MESSAGE}</code>
+            <span>Additional custom text</span>
+        </button>
+    </div>
+
+    <p class="placeholder-note">
+        Example: Hello {CUSTOMER_NAME}, your payment of RM {AMOUNT}
+        is due on {DUE_DATE}.
+    </p>
+</div>
+
+    <form method="post" id="createTemplateForm">
+        {% csrf_token %}
+
+        <div class="template-form-group">
+            <label>Template Name</label>
+
+            <input
+                type="text"
+                name="title"
+                id="templateTitle"
+                value="{{ title }}"
+                class="template-form-control"
+                required
+            >
+        </div>
+
+        <div class="template-form-group">
+            <label>Language</label>
+
+            <select
+    name="language"
+    id="templateLanguage"
+    class="template-form-control"
+    required
+>
+    <option value="">Select Language</option>
+
+    <option
+        value="EN"
+        {% if language == "EN" %}selected{% endif %}
+    >
+        English
+    </option>
+
+    <option
+        value="BM"
+        {% if language == "BM" %}selected{% endif %}
+    >
+        Malay
+    </option>
+</select>
+
+        <div class="template-form-group">
+            <label>Message Body</label>
+
+            <textarea
+                name="body"
+                id="templateBody"
+                rows="9"
+                class="template-form-control"
+                required
+            >{{ body }}</textarea>
+        </div>
+
+        <div class="form-actions">
+            <button type="submit" class="btn">
+                Save Template
+            </button>
+            <a href="{% url 'message_center' %}" class="btn">
+                Cancel
+            </a>
+            <button
+                type="button"
+                class="btn"
+                style="
+                    background:#6B7280;
+                    color:white;
+                "
+                onclick="clearTemplateForm()"
+            >
+                Clear
+            </button>
+
+            
+        </div>
+    </form>
+</div>
+
+<script>
+function clearTemplateForm() {
+    document.getElementById("templateTitle").value = "";
+    document.getElementById("templateLanguage").value = "";
+    document.getElementById("templateBody").value = "";
+
+    document.getElementById("templateTitle").focus();
+}
+</script>
+<script>
+function insertPlaceholder(placeholder) {
+    const messageBody = document.getElementById("templateBody");
+
+    const start = messageBody.selectionStart;
+    const end = messageBody.selectionEnd;
+    const currentText = messageBody.value;
+
+    messageBody.value =
+        currentText.substring(0, start) +
+        placeholder +
+        currentText.substring(end);
+
+    const newCursorPosition = start + placeholder.length;
+
+    messageBody.focus();
+    messageBody.setSelectionRange(
+        newCursorPosition,
+        newCursorPosition
+    );
+}
+</script>
+
+{% endblock %}

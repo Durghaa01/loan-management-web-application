@@ -1,0 +1,52 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Application Form</title>
+
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="{% static 'core/favicon-new.ico' %}"
+    >
+
+    <style>
+        body{
+            margin:0;
+            background:#f4f6f9;
+            font-family:Garamond, "Times New Roman", serif;
+            color:#111827;
+        }
+
+        .public-wrapper{
+            max-width:1000px;
+            margin:30px auto;
+            padding:20px;
+        }
+
+        .public-logo{
+            display:block;
+            width:110px;
+            margin:0 auto 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="public-wrapper">
+
+    <img
+        src="{% static 'core/logo.png' %}"
+        class="public-logo"
+        alt="Logo"
+    >
+
+    {% block content %}
+    {% endblock %}
+
+</div>
+
+</body>
+</html>

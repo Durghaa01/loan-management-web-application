@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<meta charset="UTF-8">
+
+<style>
+
+body{
+    font-family:Helvetica;
+    font-size:11px;
+}
+
+.card{
+    border:none;
+    box-shadow:none;
+}
+
+.btn{
+    display:none;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<style>
+@page{
+    size: A4;
+    margin: 35px;
+}
+
+body{
+    font-family: Helvetica;
+    font-size: 11px;
+}
+
+.agreement-header{
+    text-align:center;
+    margin-bottom:18px;
+}
+
+.agreement-header h2{
+    font-size:16px;
+    margin-bottom:8px;
+}
+
+.agreement-header p{
+    font-size:11px;
+}
+
+.agreement-table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+.agreement-table th,
+.agreement-table td{
+    border:1px solid #000;
+    padding:7px;
+    vertical-align:top;
+}
+
+.agreement-table th{
+    background-color:#eeeeee;
+    text-align:center;
+    font-weight:bold;
+}
+
+.col-no{
+    width:10%;
+    text-align:center;
+}
+
+.col-matter{
+    width:25%;
+}
+
+.col-details{
+    width:65%;
+}
+
+.lender-details-cell{
+    height:180px;
+}
+
+.agreement-table{
+    width:100%;
+    table-layout:fixed;
+}
+
+.agreement-table td p{
+    margin:0 0 6px 0;
+}
+
+.col-no{
+    width:10%;
+}
+
+.col-matter{
+    width:25%;
+}
+
+.col-details{
+    width:65%;
+}
+</style>
+
+    
+<div class="card">
+
+    <div class="agreement-header">
+
+        <h2>
+            {% if lang == "ms" %}
+                PERJANJIAN
+            {% else %}
+                AGREEMENT
+            {% endif %}
+        </h2>
+
+        <p>
+            {% if lang == "ms" %}
+                Untuk dibaca dan difahami sebagai suatu bahagian penting dalam perjanjian ini
+            {% else %}
+                To be read and understood as an important section in this agreement
+            {% endif %}
+        </p>
+
+    </div>
+
+    <hr>
+
+    <table class="agreement-table">
+
+<thead>
+<tr>
+    <th class="col-no">
+        {% if lang == "ms" %}No Seksyen{% else %}No Section{% endif %}
+    </th>
+
+    <th class="col-matter">
+        {% if lang == "ms" %}Perkara{% else %}Matter{% endif %}
+    </th>
+
+    <th class="col-details">
+        {% if lang == "ms" %}Butiran{% else %}Details{% endif %}
+    </th>
+</tr>
+</thead>
+        <tbody>
+
+            <tr>
+                <td class="col-no">1</td>
+                <td>
+                    {% if lang == "ms" %}Tarikh Perjanjian{% else %}Agreement Date{% endif %}
+                </td>
+                <td class="col-details">
+                    <strong>{{ agreement.agreement_date|date:"d/m/Y" }}</strong>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-no">2</td>
+                <td>
+                    {% if lang == "ms" %}Butiran Pemberi Pinjaman{% else %}Lender Details{% endif %}
+                </td>
+                <td class="lender-details-cell"></td>
+            </tr>
+
+            <tr>
+    <td class="col-no">3</td>
+
+    <td>
+        {% if lang == "ms" %}Butiran Peminjam{% else %}Borrower Details{% endif %}
+    </td>
+
+    <td class="col-details">
+        <p><b>{% if lang == "ms" %}Nama Penuh:{% else %}Full Name:{% endif %}</b></p>
+        <p>{{ agreement.customer.full_name }}</p>
+
+        <p><b>{% if lang == "ms" %}KP / Pasport:{% else %}IC / Passport:{% endif %}</b></p>
+        <p>{{ agreement.customer.ic_number }}</p>
+
+        <p><b>{% if lang == "ms" %}Alamat:{% else %}Address:{% endif %}</b></p>
+        <p>{{ agreement.customer.home_address_1 }}</p>
+    </td>
+</tr>
+
+            <tr>
+                <td class="col-no">4</td>
+                <td>
+                    {% if lang == "ms" %}Jumlah Wang Pokok{% else %}Principal Amount{% endif %}
+                </td>
+                <td >
+                    <strong>{{ agreement.principal_amount_words }}</strong>
+
+                    <br><br>
+
+                    RM {{ agreement.principal_amount }}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-no">5</td>
+                <td>
+                    {% if lang == "ms" %}Kadar Faedah{% else %}Interest Rate{% endif %}
+                </td>
+                <td>
+                    {% if lang == "ms" %}
+                        Kadar faedah adalah
+                    {% else %}
+                        Interest Rate is
+                    {% endif %}
+
+                    <strong>{{ agreement.interest_rate_words }}</strong>
+
+                    %
+
+                    <strong>{{ agreement.interest_rate_percentage }}</strong>
+
+                    {% if lang == "ms" %}
+                        setahun
+                    {% else %}
+                        per year
+                    {% endif %}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-no">6</td>
+                <td>
+                    {% if lang == "ms" %}
+Bayaran Balik Setiap Ansuran
+                    {% else %}
+                        Repayment Per Installment
+                    {% endif %}
+                </td>
+                <td>
+                    RM {{ agreement.monthly_repayment_amount }}
+                </td>
+            </tr>
+
+            <tr>
+                <td class="col-no">7</td>
+                <td>
+                    {% if lang == "ms" %}
+                        Jumlah Bayaran Balik
+                    {% else %}
+                        Total Repayment Amount
+                    {% endif %}
+                </td>
+                <td>
+                    RM {{ agreement.total_repayment_amount }}
+                </td>
+            </tr>
+
+        </tbody>
+    </table>
+
+</div>
+<script>
+function setLanguage(lang){
+
+    document.querySelectorAll("[data-en]").forEach(function(el){
+
+        if(lang === "en"){
+            el.textContent = el.getAttribute("data-en");
+        }
+        else{
+            el.textContent = el.getAttribute("data-ms");
+        }
+
+    });
+
+    
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,186 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+    <h2>
+        Customer Profile Download
+    </h2>
+
+    <p>
+        Select which sections to include in the generated profile
+    </p>
+    <div id="generatePopup" class="message-popup" style="display:none;">
+    <div class="message-box success">
+        Customer profile downloaded successfully
+    </div>
+</div>
+    <form
+    method="post"
+    id="downloadForm"
+    target="pdfDownloadFrame"
+>
+
+        {% csrf_token %}
+
+        <div style="margin-top:20px;">
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sections"
+                    value="personal"
+                    checked
+                >
+                Personal Information
+            </label>
+
+            <br><br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sections"
+                    value="home"
+                    checked
+                >
+                Home Information
+            </label>
+
+            <br><br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sections"
+                    value="employment"
+                    checked
+                >
+                Employment Information
+            </label>
+
+            <br><br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sections"
+                    value="family"
+                    checked
+                >
+                Family Information
+            </label>
+
+            <br><br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sections"
+                    value="financial"
+                    checked
+                >
+                Financial Information
+            </label>
+
+            <br><br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sections"
+                    value="housing"
+                    checked
+                >
+                Housing & Vehicle Information
+            </label>
+
+            <br><br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sections"
+                    value="payment"
+                    checked
+                >
+                Payment Information
+            </label>
+
+            <br><br>
+
+            <label>
+                <input
+                    type="checkbox"
+                    name="sections"
+                    value="other"
+                    checked
+                >
+                Other Information
+            </label>
+
+        </div>
+
+        <div style="margin-top:30px;">
+            <input
+                type="hidden"
+                name="lang"
+                value="{{language}}"
+                >
+
+            <button
+                type="submit"
+                class="btn"
+            >
+                Download Profile
+            </button>
+
+        </div>
+
+    </form>
+    
+
+    <iframe
+    name="pdfDownloadFrame"
+    style="display:none;"
+></iframe>
+
+</div>
+<div
+    style="
+        display:flex;
+        justify-content:flex-end;
+        margin-top:20px;
+    "
+>
+    <a
+        href="{% url 'customer_summary' customer.id %}"
+        class="btn"
+        style="background:#6b7280;"
+    >
+        Back to Customer Profile
+    </a>
+</div>
+<script>
+document.getElementById("downloadForm").addEventListener(
+    "submit",
+    function(){
+
+        const popup =
+            document.getElementById("generatePopup");
+
+        popup.style.display = "block";
+
+        setTimeout(function(){
+            popup.style.display = "none";
+        }, 3000);
+
+        setTimeout(function(){
+            window.location.reload();
+        }, 1500);
+    }
+);
+</script>
+
+{% endblock %}

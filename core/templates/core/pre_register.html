@@ -1,0 +1,1659 @@
+{% extends "core/public_base.html" %}
+
+{% block content %}
+
+<style>
+.application-wrapper{
+    max-width:1050px;
+    margin:0;
+}
+
+.application-header{
+    background:linear-gradient(135deg,#0B3D91,#06295f);
+    color:white;
+    padding:28px;
+    border-radius:18px;
+    margin-bottom:24px;
+}
+
+.application-header h1{
+    margin:0;
+    font-size:32px;
+}
+
+.application-header p{
+    margin:10px 0 0;
+    font-size:17px;
+    opacity:0.92;
+}
+
+.lang-buttons{
+    margin-top:18px;
+    display:flex;
+    gap:12px;
+}
+.lang-btn{
+    background:white;
+    color:#0B3D91;
+    border:none;
+    border-radius:10px;
+    padding:10px 18px;
+    font-family:Garamond,"Times New Roman",serif;
+    font-size:16px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.form-section{
+    background:white;
+    padding:26px;
+    border-radius:18px;
+    margin-bottom:26px;
+    box-shadow:0 8px 22px rgba(0,0,0,0.06);
+}
+
+.form-section h2{
+    margin-top:0;
+    margin-bottom:24px;
+    color:#0B3D91;
+}
+.form-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(280px,1fr));
+    gap:24px;
+}
+
+.form-group{
+    display:flex;
+    flex-direction:column;
+}
+
+.form-group label{
+    margin-bottom:10px;
+    font-weight:bold;
+    line-height:1.5;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea{
+    padding:13px;
+    border:1px solid #d1d5db;
+    border-radius:10px;
+    font-size:16px;
+    font-family:Garamond,"Times New Roman",serif;
+}
+
+.form-group textarea{
+    min-height:100px;
+    resize:vertical;
+}
+.submit-btn{
+    background:#0B3D91;
+    color:white;
+    border:none;
+    border-radius:10px;
+    padding:14px 22px;
+    font-size:17px;
+    font-family:Garamond,"Times New Roman",serif;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.hidden-section{
+    display:none;
+}
+
+</style>
+
+<div class="application-wrapper">
+
+<div class="application-header">
+
+    <h1>
+        <span class="lang-en">
+            Application Form
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Borang Permohonan
+        </span>
+    </h1>
+    <p>
+
+        <span class="lang-en">
+            Please complete all required information.
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Sila lengkapkan semua maklumat diperlukan.
+        </span>
+
+    </p>
+
+    <div class="lang-buttons">
+
+        <button
+            type="button"
+            class="lang-btn"
+            onclick="setLanguage('en')"
+        >
+            English
+        </button>
+
+        <button
+            type="button"
+            class="lang-btn"
+            onclick="setLanguage('ms')"
+        >
+            Bahasa Melayu
+        </button>
+
+    </div>
+
+</div>
+
+<form method="POST">
+
+{% csrf_token %}
+
+<input
+    type="hidden"
+    name="selected_language"
+    id="selected_language"
+    value="en"
+>
+<div class="form-section">
+
+    <h2>
+
+        <span class="lang-en">
+            Personal Information
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Maklumat Peribadi
+        </span>
+
+    </h2>
+
+    <div class="form-grid">
+
+        <div class="form-group">
+
+            <label>
+
+                <span class="lang-en">
+                    Full Name
+                </span>
+
+                <span
+                    class="lang-ms"
+                    style="display:none;"
+                >
+                    Nama Penuh
+                </span>
+
+                *
+
+            </label>
+
+            <input
+                type="text"
+                name="full_name"
+                required
+            >
+
+        </div>
+        <div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            IC/Passport
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            KP/Pasport
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="ic_or_passport_no"
+        required
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Marital Status
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Status Perkahwinan
+        </span>
+
+        *
+
+    </label>
+
+    <select
+        name="marital_status"
+        id="marital_status"
+        required
+    >
+
+        <option value="">
+            Select
+        </option>
+
+        <option value="SINGLE">
+            Single
+        </option>
+
+        <option value="MARRIED">
+            Married
+        </option>
+
+        <option value="WIDOW">
+            Widow
+        </option>
+
+    </select>
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Home Address
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Alamat Rumah
+        </span>
+
+        *
+
+    </label>
+
+    <textarea
+        name="home_address"
+        required
+    ></textarea>
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Phone Number 1
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            No Telefon 1
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="phone_number"
+        required
+    >
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Phone Number 2
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            No Telefon 2
+        </span>
+
+    </label>
+
+    <input
+        type="text"
+        name="phone_number_2"
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Home Phone Number
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            No Telefon Rumah
+        </span>
+
+    </label>
+
+    <input
+        type="text"
+        name="home_phone_number"
+    >
+
+</div>
+
+</div>
+
+</div>
+<div class="form-section">
+
+    <h2>
+
+        <span class="lang-en">
+            Employment Information
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Maklumat Pekerjaan
+        </span>
+
+    </h2>
+
+    <div class="form-grid">
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Employer Name
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nama Majikan
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="employer_name"
+        required
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Employer Address
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Alamat Majikan
+        </span>
+
+        *
+
+    </label>
+
+    <textarea
+        name="employer_address"
+        required
+    ></textarea>
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Office Phone Number
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            No Telefon Pejabat
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="office_phone_number"
+        required
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Total Working Years
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Jumlah Tahun Bekerja
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="total_working_years"
+        required
+    >
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Net Salary After Deductions
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Gaji Bersih Selepas Potongan
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="net_salary_after_deductions"
+        required
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Salary Bank
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Bank Gaji
+        </span>
+
+        *
+
+    </label>
+
+    <select
+        name="salary_bank"
+        id="salary_bank"
+        required
+    >
+
+        <option value="">
+            Select
+        </option>
+
+        <option value="Public Bank">
+            Public Bank
+        </option>
+
+        <option value="Maybank">
+            Maybank
+        </option>
+
+        <option value="CIMB Bank">
+            CIMB Bank
+        </option>
+
+        <option value="Hong Leong Bank">
+            Hong Leong Bank
+        </option>
+
+        <option value="AmBank">
+            AmBank
+        </option>
+
+        <option value="Affin Bank">
+            Affin Bank
+        </option>
+
+        <option value="RHB Bank">
+            RHB Bank
+        </option>
+
+        <option value="HSBC Bank">
+            HSBC Bank
+        </option>
+
+        <option value="Standard Chartered Bank">
+            Standard Chartered Bank
+        </option>
+
+        <option value="Bank Kerjasama Rakyat">
+            Bank Kerjasama Rakyat
+        </option>
+
+        <option value="Bank Simpanan Nasional">
+            Bank Simpanan Nasional
+        </option>
+
+        <option value="OCBC Bank">
+            OCBC Bank
+        </option>
+
+        <option value="Bank Muamalat">
+            Bank Muamalat
+        </option>
+
+        <option value="UOB Bank">
+            UOB Bank
+        </option>
+
+        <option value="Other">
+            Other
+        </option>
+
+    </select>
+
+</div>
+<div
+    class="form-group"
+    id="other_bank_group"
+    style="display:none;"
+>
+
+    <label>
+
+        <span class="lang-en">
+            Other Bank
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Bank Lain
+        </span>
+
+    </label>
+
+    <input
+        type="text"
+        name="salary_bank_other"
+    >
+
+</div>
+
+</div>
+
+</div>
+
+<div class="form-section">
+
+    <h2>
+
+        <span class="lang-en">
+            Other Income
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Pendapatan Lain
+        </span>
+
+    </h2>
+
+    <div class="form-grid">
+        <div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Do You Receive Any Other Income
+            Apart From Salary
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Adakah Anda Menerima
+            Pendapatan Lain Selain
+            Daripada Gaji
+        </span>
+
+        *
+
+    </label>
+
+    <select
+        name="has_other_income"
+        id="has_other_income"
+        required
+    >
+
+        <option value="">
+            Select
+        </option>
+
+        <option value="YES">
+            Yes
+        </option>
+
+        <option value="NO">
+            No
+        </option>
+
+    </select>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+    class="form-section hidden-section"
+    id="other_income_section"
+>
+
+    <div class="form-grid">
+        <div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Total of Other Income
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Jumlah Pendapatan
+            Lain
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="other_income_amount"
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Name of Other Income
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Nama Pendapatan Lain
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="other_income_name"
+    >
+
+</div>
+
+</div>
+
+</div>
+<div
+    class="form-section hidden-section"
+    id="spouse_section"
+>
+
+<h2>
+
+    <span class="lang-en">
+        Spouse Information
+    </span>
+
+    <span
+        class="lang-ms"
+        style="display:none;"
+    >
+        Maklumat Pasangan
+    </span>
+
+</h2>
+
+<div class="form-grid">
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Spouse Full Name
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nama Penuh Pasangan
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="spouse_full_name"
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Spouse IC/Passport
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            KP/Pasport Pasangan
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="spouse_ic_number"
+    >
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Spouse Job
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Pekerjaan Pasangan
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="spouse_job"
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Spouse Income
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Pendapatan Pasangan
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="spouse_income"
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Number of Children
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Bilangan Anak
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="number"
+        name="number_of_children"
+    >
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Number of Working Children
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Bilangan Anak Bekerja
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="number"
+        name="number_of_working_children"
+    >
+
+</div>
+
+</div>
+
+</div>
+
+<div class="form-section">
+
+<h2>
+
+    <span class="lang-en">
+        Existing Loans 
+    </span>
+
+    <span
+        class="lang-ms"
+        style="display:none;"
+    >
+        Pinjaman Sedia Ada
+    </span>
+
+</h2>
+
+<div class="form-grid">
+    <div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            Are You Borrowing From a
+            Licensed Money Lender
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Adakah Anda Meminjam
+            Daripada Pemberi Pinjaman
+            Wang Berlesen
+        </span>
+
+        *
+
+    </label>
+
+    <select
+        name="borrowing_from_licensed_lender"
+        id="licensed_lender"
+        required
+    >
+
+        <option value="">
+            Select
+        </option>
+
+        <option value="YES">
+            Yes
+        </option>
+
+        <option value="NO">
+            No
+        </option>
+
+    </select>
+
+</div>
+
+</div>
+
+</div>
+
+<div
+    class="form-section hidden-section"
+    id="licensed_balance_section"
+>
+
+<div class="form-grid">
+    <div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Balance of the Loan
+            Amount with a Licensed
+            Money Lender
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Baki Amaun
+            Pinjaman Dengan Pemberi
+            Pinjaman Wang Berlesen
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="licensed_lender_balance"
+    >
+
+</div>
+
+</div>
+
+</div>
+
+<div class="form-section">
+<h2>
+
+    <span class="lang-en">
+        Commitments
+    </span>
+
+    <span
+        class="lang-ms"
+        style="display:none;"
+    >
+       Komitmen Sedia Ada
+    </span>
+
+</h2>
+<div class="form-grid">
+    <div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Monthly Commitment
+            Amount for Car Loan
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Amaun Komitmen
+            Bulanan Pinjaman Kereta
+        </span>
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="car_loan_commitment"
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Monthly Commitment
+            Amount for Home Loan
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Amaun Komitmen
+            Bulanan Pinjaman Rumah 
+        </span>
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="house_loan_commitment"
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Monthly Commitment
+            Amount for House Rental
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Amaun Komitmen
+            Bulanan Sewa Rumah
+        </span>
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="house_rental_commitment"
+    >
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Monthly Commitment
+            Amount for Motorcycle Loan
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Amaun Komitmen
+            Bulanan Pinjaman Motosikal
+        </span>
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="motorcycle_commitment"
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State Name of Any Other Commitments
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Nama Komitmen Lain
+        </span>
+
+    </label>
+
+    <input
+        type="text"
+        name="other_commitment_name"
+    >
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Other Commitment Amount
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Amaun Komitmen Lain
+        </span>
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="other_commitment_amount"
+    >
+
+</div>
+
+</div>
+
+</div>
+
+<div class="form-section">
+
+<h2>
+
+    <span class="lang-en">
+        Loan Request
+    </span>
+
+    <span
+        class="lang-ms"
+        style="display:none;"
+    >
+        Permohonan Pinjaman
+    </span>
+
+</h2>
+
+<div class="form-grid">
+    <div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Amount You Want to Borrow
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Amaun Anda Ingin Meminjam
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="number"
+        step="0.01"
+        name="amount_wanted_to_borrow"
+        required
+    >
+
+</div>
+
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            State the Reason for the Loan
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Nyatakan Sebab Pinjaman
+        </span>
+
+        *
+
+    </label>
+
+    <textarea
+        name="loan_reason"
+        required
+    ></textarea>
+
+</div>
+<div class="form-group">
+
+    <label>
+
+        <span class="lang-en">
+            What is the Name of the Person
+            Who Introduced You to Us
+        </span>
+
+        <span
+            class="lang-ms"
+            style="display:none;"
+        >
+            Apakah Nama Orang Yang
+            Memperkenalkan Anda Kepada Kami
+        </span>
+
+        *
+
+    </label>
+
+    <input
+        type="text"
+        name="referred_by"
+        required
+    >
+
+</div>
+
+</div>
+
+</div>
+
+<button
+    type="submit"
+    class="submit-btn"
+>
+    <span class="lang-en">
+        Submit Application
+    </span>
+
+    <span
+        class="lang-ms"
+        style="display:none;"
+    >
+        Hantar Permohonan
+    </span>
+</button>
+</form>
+
+</div>
+
+<script>
+
+function setLanguage(lang){
+    document.getElementById(
+    "selected_language"
+).value = lang;
+
+    document.querySelectorAll(".lang-en")
+    .forEach(el => {
+        el.style.display =
+            lang === "en"
+            ? "inline"
+            : "none";
+    });
+
+    document.querySelectorAll(".lang-ms")
+    .forEach(el => {
+        el.style.display =
+            lang === "ms"
+            ? "inline"
+            : "none";
+    });
+
+    const maritalOptions =
+        document.querySelectorAll(
+            "#marital_status option"
+        );
+
+    maritalOptions[0].text =
+        lang === "en"
+        ? "Select"
+        : "Pilih";
+
+    maritalOptions[1].text =
+        lang === "en"
+        ? "Single"
+        : "Bujang";
+
+    maritalOptions[2].text =
+        lang === "en"
+        ? "Married"
+        : "Berkahwin";
+
+    maritalOptions[3].text =
+    lang === "en"
+    ? "Widow"
+    : "Janda";
+
+    const incomeOptions =
+    document.querySelectorAll(
+        "#has_other_income option"
+    );
+
+    incomeOptions[0].text =
+    lang === "en"
+    ? "Select"
+    : "Pilih";
+
+    incomeOptions[1].text =
+    lang === "en"
+    ? "Yes"
+    : "Ya";
+
+    incomeOptions[2].text =
+    lang === "en"
+    ? "No"
+    : "Tidak";
+
+    const lenderOptions =
+    document.querySelectorAll(
+        "#licensed_lender option"
+    );
+
+    lenderOptions[0].text =
+    lang === "en"
+    ? "Select"
+    : "Pilih";
+
+    lenderOptions[1].text =
+    lang === "en"
+    ? "Yes"
+    : "Ya";
+
+    lenderOptions[2].text =
+    lang === "en"
+    ? "No"
+    : "Tidak";
+
+    const bankOptions =
+    document.querySelectorAll(
+        "#salary_bank option"
+    );
+
+    bankOptions[0].text =
+    lang === "en"
+    ? "Select"
+    : "Pilih";
+
+    bankOptions[bankOptions.length - 1].text =
+    lang === "en"
+    ? "Other"
+    : "Lain-lain";
+
+}
+
+
+const salaryBank =
+    document.getElementById(
+        "salary_bank"
+    );
+
+const otherBankGroup =
+    document.getElementById(
+        "other_bank_group"
+    );
+
+salaryBank.addEventListener(
+    "change",
+    function(){
+
+        if(this.value === "Other"){
+
+            otherBankGroup.style.display =
+                "block";
+
+        } else {
+
+            otherBankGroup.style.display =
+                "none";
+
+        }
+
+    }
+);
+
+const maritalStatus =
+    document.getElementById(
+        "marital_status"
+    );
+
+const spouseSection =
+    document.getElementById(
+        "spouse_section"
+    );
+
+maritalStatus.addEventListener(
+    "change",
+    function(){
+
+        const spouseFullName =
+    document.querySelector("[name='spouse_full_name']");
+
+const spouseIc =
+    document.querySelector("[name='spouse_ic_number']");
+
+const spouseJob =
+    document.querySelector("[name='spouse_job']");
+
+const spouseIncome =
+    document.querySelector("[name='spouse_income']");
+
+const numberOfChildren =
+    document.querySelector("[name='number_of_children']");
+
+const numberOfWorkingChildren =
+    document.querySelector("[name='number_of_working_children']");
+
+if(this.value === "MARRIED"){
+
+    spouseSection.style.display = "block";
+
+    spouseFullName.required = true;
+    spouseIc.required = true;
+    spouseJob.required = true;
+    spouseIncome.required = true;
+    numberOfChildren.required = true;
+    numberOfWorkingChildren.required = true;
+
+} else {
+
+    spouseSection.style.display = "none";
+
+    spouseFullName.required = false;
+    spouseIc.required = false;
+    spouseJob.required = false;
+    spouseIncome.required = false;
+    numberOfChildren.required = false;
+    numberOfWorkingChildren.required = false;
+
+}
+
+    }
+);
+
+const otherIncome =
+    document.getElementById(
+        "has_other_income"
+    );
+
+const otherIncomeSection =
+    document.getElementById(
+        "other_income_section"
+    );
+
+otherIncome.addEventListener(
+    "change",
+    function(){
+
+        const otherIncomeAmount =
+    document.querySelector("[name='other_income_amount']");
+
+const otherIncomeName =
+    document.querySelector("[name='other_income_name']");
+
+if(this.value === "YES"){
+
+    otherIncomeSection.style.display = "block";
+
+    otherIncomeAmount.required = true;
+    otherIncomeName.required = true;
+
+} else {
+
+    otherIncomeSection.style.display = "none";
+
+    otherIncomeAmount.required = false;
+    otherIncomeName.required = false;
+
+}
+
+    }
+);
+
+const licensedLender =
+    document.getElementById(
+        "licensed_lender"
+    );
+
+const licensedBalanceSection =
+    document.getElementById(
+        "licensed_balance_section"
+    );
+
+licensedLender.addEventListener(
+    "change",
+    function(){
+
+        const licensedLenderBalance =
+    document.querySelector("[name='licensed_lender_balance']");
+
+if(this.value === "YES"){
+
+    licensedBalanceSection.style.display = "block";
+
+    licensedLenderBalance.required = true;
+
+} else {
+
+    licensedBalanceSection.style.display = "none";
+
+    licensedLenderBalance.required = false;
+
+}
+
+    }
+);
+
+</script>
+
+<script>
+window.addEventListener("pageshow", function(){
+
+    document.querySelector("form").reset();
+
+});
+</script>
+{% endblock %}

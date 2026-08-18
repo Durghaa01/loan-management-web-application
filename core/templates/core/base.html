@@ -1,0 +1,1039 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>System Name</title>
+
+    <style>
+
+        :root {
+            --primary: #0B3D91;
+            --secondary: #E6D3A3;
+            --background: #F9FAFB;
+            --card: #FFFFFF;
+            --text: #1F2937;
+            --muted: #6B7280;
+            --border: #E5E7EB;
+        }
+
+        *{
+            box-sizing:border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Garamond, "Times New Roman", serif;
+            background: var(--background);
+            color: var(--text);
+        }
+
+        a{
+            text-decoration:none;
+            color:inherit;
+        }
+
+        .app-shell{
+            display:flex;
+            min-height:100vh;
+        }
+
+        /* SIDEBAR */
+
+        .sidebar{
+            width:250px;
+            background:white;
+            border-right:1px solid var(--border);
+
+            position:fixed;
+            top:0;
+            left:0;
+            bottom:0;
+
+            padding:20px;
+
+            display:flex;
+            flex-direction:column;
+        }
+
+        .brand{
+            display:flex;
+            align-items:center;
+            gap:12px;
+
+            margin-bottom:35px;
+        }
+
+        .brand-logo{
+            width:58px;
+            height:58px;
+
+            border-radius:14px;
+
+            background:white;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            overflow: hidden;
+    
+        }
+
+        .sidebar-logo{
+            width:42px;
+            height: 42px;
+            object-fit:contain;
+        }
+
+        .brand-name{
+            font-size:22px;
+            font-weight:bold;
+            color:var(--primary);
+        }
+
+        .side-menu{
+            display:flex;
+            flex-direction:column;
+            gap:8px;
+        }
+
+        .side-link{
+            padding:12px 14px;
+            border-radius:12px;
+
+            color:var(--muted);
+
+            font-size:17px;
+            font-weight:bold;
+
+            transition:0.2s ease;
+        }
+
+        .side-link:hover{
+            background:#EEF4FF;
+            color:var(--primary);
+        }
+
+        .logout-area{
+            margin-top:auto;
+        }
+
+        .logout-link{
+            display:block;
+
+            background:#FFE5E5;
+            color:#8A0000;
+
+            padding:12px;
+            border-radius:12px;
+
+            text-align:center;
+            font-weight:bold;
+        }
+
+        /* MAIN AREA */
+
+        .main-area{
+            margin-left:250px;
+            width:calc(100% - 250px);
+        }
+
+        /* TOPBAR */
+
+        .topbar{
+    height:78px;
+
+    background:white;
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+    align-items:center;
+
+    gap:18px;
+
+    padding:0 28px;
+}
+
+        .search-box{
+            flex:1;
+            max-width: 620px;
+
+            background:#F3F4F6;
+
+            border:1px solid var(--border);
+
+            border-radius:999px;
+
+            display:flex;
+            align-items:center;
+
+            padding:10px 16px;
+
+            gap:10px;
+        }
+
+        .search-box input{
+            border:none;
+            background:transparent;
+            outline:none;
+
+            width:100%;
+
+            font-family:Garamond, "Times New Roman", serif;
+            font-size:16px;
+        }
+
+        .top-actions{
+            display:flex;
+            align-items:center;
+            gap:18px;
+            margin-left: auto;
+        }
+
+        .notif{
+            width:40px;
+            height:40px;
+
+            border-radius:50%;
+
+            border:1px solid var(--border);
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            background:white;
+
+            font-size:18px;
+        }
+
+        .user-box{
+            display:flex;
+            align-items:center;
+            gap:10px;
+
+            font-weight:bold;
+        }
+
+        .user-avatar{
+            width:40px;
+            height:40px;
+
+            border-radius:50%;
+
+            background:var(--secondary);
+            color:var(--primary);
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            font-weight:bold;
+        }
+        /* CONTENT AREA */
+
+        .container{
+            padding:28px;
+        }
+
+        /* CARD */
+
+        .card{
+            background:var(--card);
+
+            padding:25px;
+
+            border-radius:16px;
+
+            margin-bottom:20px;
+
+            box-shadow:0 8px 22px rgba(0,0,0,0.06);
+        }
+
+        /* BUTTONS */
+
+        .btn{
+            background:var(--primary);
+            color:white;
+
+            padding:10px 16px;
+
+            border:none;
+            border-radius:8px;
+
+            cursor:pointer;
+
+            text-decoration:none;
+
+            font-size:16px;
+
+            font-family:Garamond, "Times New Roman", serif;
+
+            display:inline-block;
+        }
+
+        .btn:hover{
+            opacity:0.9;
+        }
+
+        input,
+        select,
+        textarea{
+            border:1px solid #d1d5db;
+
+            border-radius:8px;
+
+            font-family:Garamond, "Times New Roman", serif;
+
+            font-size:16px;
+        }
+
+        label{
+            font-family:Garamond, "Times New Roman", serif;
+            font-size:16px;
+            font-weight:bold;
+        }
+
+        h1,h2,h3{
+            font-family:Garamond, "Times New Roman", serif;
+        }
+
+        table{
+            font-family:Garamond, "Times New Roman", serif;
+        }
+
+    .sidebar-toggle{
+    width:40px;
+    height:40px;
+    border:none;
+    border-radius:10px;
+    background:#EEF4FF;
+    color:var(--primary);
+    font-size:20px;
+    cursor:pointer;
+    margin-right:14px;
+}
+
+.sidebar{
+    transition:0.25s ease;
+}
+
+.main-area{
+    transition:0.25s ease;
+}
+
+body.sidebar-collapsed .sidebar{
+    transform:translateX(-250px);
+}
+
+body.sidebar-collapsed .main-area{
+    margin-left:0;
+    width:100%;
+}
+
+.notif-wrap{
+    position:relative;
+}
+
+.notif{
+    position:relative;
+    cursor:pointer;
+}
+
+.notif-badge{
+    position:absolute;
+    top:-6px;
+    right:-6px;
+
+    width:20px;
+    height:20px;
+
+    border-radius:50%;
+    background:#C9402F;
+    color:white;
+
+    font-size:11px;
+    font-weight:700;
+    line-height:20px;
+    text-align:center;
+
+    padding:0;
+    margin:0;
+
+    display:block;
+    overflow:hidden;
+
+    border:2px solid white;
+    box-sizing:border-box;
+}
+.notif-dropdown{
+    display:none;
+
+    position:absolute;
+
+    right:0;
+    top:48px;
+
+    width:400px;
+
+    background:white;
+
+    border:none;
+
+    border-radius:18px;
+
+    box-shadow:0 18px 45px rgba(0,0,0,0.18);
+
+    z-index:50;
+
+    overflow-y: auto;
+
+    max-height: 450px;
+}
+
+.notif-dropdown.show{
+    display:block;
+}
+
+.notif-header{
+    padding:14px;
+
+    font-weight:bold;
+
+    color:var(--primary);
+
+    border-bottom:1px solid var(--border);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+.notif-item{
+    display:block;
+
+    padding:16px 18px;
+
+    border-bottom:1px solid #F1F5F9;
+
+    color:var(--text);
+
+    transition:0.2s ease;
+}
+
+.notif-item:hover{
+    background:#F8FAFC;
+}
+
+.notif-item:hover{
+    background:#F3F4F6;
+}
+
+.notif-title{
+    font-size:18px;
+    font-weight:bold;
+    color:#0B3D91;
+}
+
+.notif-message{
+    font-size:15px;
+    color:#6B7280;
+    margin-top:8px;
+    line-height:1.5;
+}
+
+.notif-time{
+
+    margin-top:8px;
+
+    font-size:12px;
+
+    color:#9CA3AF;
+
+    font-weight:bold;
+}
+.notif-empty{
+    padding:16px;
+    color:#6B7280;
+    text-align:center;
+}
+
+.notif-actions{
+    padding:10px;
+    text-align:center;
+    background:#F9FAFB;
+}
+
+.notif-actions a{
+    color:#8A0000;
+    font-weight:bold;
+}
+
+.search-box{
+    position:relative;
+}
+
+.search-dropdown{
+    position:absolute;
+
+    top:58px;
+    left:0;
+
+    width:100%;
+
+    background:white;
+
+    border:1px solid var(--border);
+
+    border-radius:16px;
+
+    box-shadow:0 16px 40px rgba(0,0,0,0.12);
+
+    display:none;
+
+    overflow:hidden;
+
+    z-index:100;
+}
+
+.search-dropdown.show{
+    display:block;
+}
+
+.search-item{
+    display:block;
+
+    padding:14px 16px;
+
+    border-bottom:1px solid #F1F1F1;
+
+    color:var(--text);
+}
+
+.search-item:hover{
+    background:#F9FAFB;
+}
+
+.search-type{
+    font-size:13px;
+    font-weight:bold;
+    color:#0B3D91;
+    margin-bottom:4px;
+}
+
+.search-title{
+    font-weight:bold;
+}
+
+.search-subtitle{
+    font-size:14px;
+    color:#6B7280;
+    margin-top:4px;
+}
+
+.search-empty{
+    padding:16px;
+    text-align:center;
+    color:#6B7280;
+}
+
+.search-highlight{
+    background:yellow;
+    font-weight:bold;
+}
+
+.message-popup{
+    position:fixed;
+    top:20px;
+    left:50%;
+    transform: translateX(-50%);
+    z-index:9999;
+}
+
+.message-box{
+    background:#0B3D91;
+    color:white;
+    padding:14px 20px;
+    border-radius:12px;
+    box-shadow:0 8px 20px rgba(0,0,0,0.2);
+    margin-bottom:10px;
+    font-weight:bold;
+}
+
+.message-box.success{
+    background:#16A34A;
+}
+
+.message-box.error{
+    background:#DC2626;
+}
+
+.message-box.warning{
+    background:#F59E0B;
+}
+    </style>
+
+<link 
+    rel="icon" 
+    type="image/x-icon"
+    href="{% static 'core/favicon-new.ico' %}">
+
+</head>
+
+<body>
+
+{% if not hide_nav %}
+
+<div class="app-shell">
+
+    <!-- SIDEBAR -->
+
+    <aside class="sidebar">
+
+        <div class="brand">
+
+            <div class="brand-logo">
+                <img
+                src="{% static 'core/logo.png' %}"
+                alt="Logo"
+                class="sidebar-logo"
+                >
+            </div>
+
+            <div class="brand-name">
+                System Name
+            </div>
+
+        </div>
+
+        <div class="side-menu">
+
+            <a class="side-link" href="/dashboard/">Dashboard</a>
+
+            <a class="side-link" href="/applications/">Applications</a>
+
+            <a class="side-link" href="/customers/">Customers</a>
+
+            <a class="side-link" href="/agreements/">Agreements</a>
+
+            <a class="side-link" href="/payments/">Payments</a>
+
+            <a class="side-link" href="/ledger/">Ledgers</a>
+
+            <a class="side-link" href="/reports/">Reports</a>
+
+            <a class="side-link" href="/activity-log/">Activity Log</a>
+
+            <a class="side-link" href="/messages/">Messages</a>
+
+            <a class="side-link" href="/admin/">Admin</a>
+
+        </div>
+
+        <div class="logout-area">
+
+            <a class="logout-link" href="/logout/">
+                Logout
+            </a>
+
+        </div>
+
+    </aside>
+
+    <!-- MAIN -->
+
+    <div class="main-area">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+    <button class="sidebar-toggle" id="sidebarToggle">
+        ☰
+    </button>
+
+    <div class="search-box" id="searchBoxWrap">
+
+                <span>🔍</span>
+
+                <input
+    type="text"
+    id="globalSearch"
+    placeholder="Search..."
+    autocomplete="off"
+>
+
+<div class="search-dropdown" id="searchDropdown">
+
+    <div class="search-empty">
+        Start typing to search...
+    </div>
+
+</div>
+
+            </div>
+
+            <div class="top-actions">
+
+                <div class="notif-wrap">
+
+    <div class="notif" id="notifBtn">
+
+        🔔
+
+       
+        <span 
+        id="notification-count"
+        class="notif-badge"
+         {% if unread_notifications_count == 0 %}
+         style="display: none;"
+         {% endif %}
+        >
+            {{ unread_notifications_count }}
+        </span>
+        
+
+    </div>
+
+    <div class="notif-dropdown" id="notifDropdown">
+
+        <div class="notif-header">
+
+            <span>
+                Notifications
+            </span>
+
+            <a
+                href="/notifications/clear/"
+                style="font-size:13px; color:#8A0000;"
+            >
+                Clear all
+            </a>
+
+        </div>
+    <div id="notification-list">
+        {% if latest_notifications %}
+
+            {% for n in latest_notifications %}
+
+                <a
+                    class="notif-item"
+                    href="/notifications/{{ n.id }}/open/"
+                >
+
+                    <div class="notif-title">
+                        {{ n.title }}
+                    </div>
+
+                    <div class="notif-message">
+    {{ n.message }}
+</div>
+
+<div class="notif-time">
+    {{ n.created_at|timesince }} ago
+</div>
+
+                </a>
+
+            {% endfor %}
+
+        {% else %}
+
+            <div class="notif-empty">
+                No notifications
+            </div>
+
+        {% endif %}
+        </div>
+        </div>
+
+</div>
+
+                <div class="user-box">
+
+                    <div class="user-avatar">
+                        {{ request.user.full_name|default:request.user.username|first|upper }}
+                    </div>
+
+                    <div>
+                        {{ request.user.full_name|default:request.user.username }}
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- PAGE CONTENT -->
+
+        <div class="container">
+
+            {% block content %}
+            {% endblock %}
+
+        </div>
+
+    </div>
+
+</div>
+
+{% else %}
+
+<div class="container">
+
+    {% block content_no_nav %}
+    {% endblock %}
+
+</div>
+
+{% endif %}
+
+<script>
+const sidebarToggle = document.getElementById("sidebarToggle");
+
+if (sidebarToggle) {
+    sidebarToggle.addEventListener("click", function () {
+        document.body.classList.toggle("sidebar-collapsed");
+    });
+}
+</script>
+
+<script>
+
+const notifBtn =
+document.getElementById("notifBtn");
+
+const notifDropdown =
+document.getElementById("notifDropdown");
+
+if (notifBtn && notifDropdown) {
+
+    notifBtn.addEventListener(
+        "click",
+        function(e){
+
+            e.stopPropagation();
+
+            notifDropdown.classList.toggle("show");
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        function(){
+
+            notifDropdown.classList.remove("show");
+        }
+    );
+
+    notifDropdown.addEventListener(
+        "click",
+        function(e){
+
+            e.stopPropagation();
+        }
+    );
+}
+
+window.addEventListener(
+    "pageshow",
+    function(){
+
+        const notifDropdown =
+        document.getElementById(
+            "notifDropdown"
+        );
+
+        if(notifDropdown){
+
+            notifDropdown.classList.remove(
+                "show"
+            );
+
+        }
+
+    }
+);
+
+</script>
+
+<script>
+
+const globalSearch = document.getElementById("globalSearch");
+const searchDropdown = document.getElementById("searchDropdown");
+
+function highlightText(text, query){
+
+    if(!query) return text;
+
+    const regex = new RegExp(`(${query})`, "gi");
+
+    return text.replace(
+        regex,
+        '<span class="search-highlight">$1</span>'
+    );
+}
+
+async function performSearch(query){
+if(query.length === 0){
+    searchDropdown.classList.remove("show");
+    searchDropdown.innerHTML = "";
+    return;
+}
+    if(query.length < 2){
+
+        searchDropdown.innerHTML = `
+            <div class="search-empty">
+                Searching...
+            </div>
+        `;
+
+        searchDropdown.classList.add("show");
+
+        return;
+    }
+
+    const response = await fetch(
+        `/global-search/?q=${encodeURIComponent(query)}`
+    );
+
+    const data = await response.json();
+
+    if(data.results.length === 0){
+
+        searchDropdown.innerHTML = `
+            <div class="search-empty">
+                No results found
+            </div>
+        `;
+
+        searchDropdown.classList.add("show");
+
+        return;
+    }
+
+    let html = "";
+    data.results.forEach(item => {
+
+        html += `
+            <a
+                href="${item.url}"
+                class="search-item"
+            >
+
+                <div class="search-type">
+                    ${item.type}
+                </div>
+
+                <div class="search-title">
+                    ${highlightText(item.title, query)}
+                </div>
+
+                <div class="search-subtitle">
+                    ${highlightText(item.subtitle, query)}
+                </div>
+
+            </a>
+        `;
+    });
+
+    searchDropdown.innerHTML = html;
+
+    searchDropdown.classList.add("show");
+}
+
+if(globalSearch){
+
+    globalSearch.addEventListener(
+        "input",
+        function(){
+
+            performSearch(
+                this.value.trim()
+            );
+        }
+    );
+
+    document.addEventListener(
+        "click",
+        function(e){
+
+            if(
+                !document.getElementById("searchBoxWrap")
+                .contains(e.target)
+            ){
+                searchDropdown.classList.remove("show");
+            }
+        }
+    );
+}
+
+</script>
+{% if messages %}
+<div id="messagePopup" class="message-popup">
+    {% for message in messages %}
+        <div class="message-box {{ message.tags }}">
+            {{ message }}
+        </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<script>
+setTimeout(function(){
+
+    const popup =
+        document.getElementById("messagePopup");
+
+    if(popup){
+        popup.style.display = "none";
+    }
+
+}, 3000);
+</script>
+<script>
+function refreshNotifications(){
+    fetch("/notifications/api/?t=" + new Date().getTime())
+    .then(response => response.json())
+    .then(data => {
+        const badge = document.getElementById("notification-count");
+
+        if(badge){
+            badge.style.display = data.unread_count > 0 ? "inline-block" : "none";
+            badge.innerText = data.unread_count;
+        }
+
+        const list = document.getElementById("notification-list");
+
+        if(list){
+            list.innerHTML = data.html;
+        }
+    });
+}
+
+function refreshRecentActivity(){
+    console.log("Refreshing Activity");
+
+    fetch("/activity/api/?t=" + new Date().getTime())
+    .then(response => response.json())
+    .then(data => {
+        const activityList = document.getElementById("recent-activity-list");
+
+        if(activityList){
+            activityList.innerHTML = data.html;
+            console.log("Activity Updated");
+        }
+    });
+}
+
+window.addEventListener("load", function(){
+    refreshNotifications();
+    refreshRecentActivity();
+
+    setInterval(function(){
+        refreshNotifications();
+        refreshRecentActivity();
+    }, 5000);
+});
+</script>
+</body>
+</html>

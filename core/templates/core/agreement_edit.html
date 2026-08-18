@@ -1,0 +1,374 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<style>
+.agreement-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:20px;
+}
+.agreement-header{
+    text-align:center;
+    margin-bottom:30px;
+}
+
+.agreement-header h2{
+    margin-bottom:10px;
+}
+
+.agreement-header p{
+    margin:0;
+}
+.agreement-table th,
+.agreement-table td{
+    border:1px solid #000;
+    padding:12px;
+    vertical-align:top;
+}
+
+.agreement-table th{
+    background:#f5f5f5;
+    text-align:center;
+}
+
+.agreement-table td:first-child{
+    width:70px;
+    text-align:center;
+}
+
+.agreement-table td:nth-child(2){
+    width:220px;
+}
+.lender-details-cell{
+    height: 150px;
+}
+
+
+</style>
+
+
+    
+<div class="card">
+
+    <div class="agreement-header">
+
+    <h2
+    data-en="AGREEMENT"
+    data-ms="PERJANJIAN">
+    AGREEMENT
+</h2>
+
+    <p
+    data-en="To be read and understood as an important section in this agreement"
+    data-ms="Untuk dibaca dan difahami sebagai suatu bahagian penting dalam perjanjian ini">
+    To be read and understood as an important section in this agreement
+</p>
+</div>
+    <hr>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        
+
+        <input
+    type="hidden"
+    name="selected_language"
+    id="selected_language"
+    value="en"
+>
+
+        <table class="agreement-table">
+            <th
+    data-en="No Section"
+    data-ms="No Seksyen">
+    No Section
+</th>
+
+<th
+    data-en="Matter"
+    data-ms="Perkara">
+    Matter
+</th>
+
+<th
+    data-en="Details"
+    data-ms="Butiran">
+    Details
+</th>
+
+            <tbody>
+
+                <tr>
+                    <td>1</td>
+                    <td data-en="Agreement Date"
+    data-ms="Tarikh Perjanjian">Agreement Date</td>
+                    <td>
+                        <strong>{{ agreement.agreement_date|date:"d/m/Y" }}</strong>
+
+
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>2</td>
+                    <td data-en="Lender Details"
+    data-ms="Butiran Pemberi Pinjaman">Lender Details</td>
+                    <td class="lender-details-cell">
+                    
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>3</td>
+                    <td data-en="Borrower Details"
+    data-ms="Butiran Peminjam">Borrower Details</td>
+                    <td>
+
+<strong data-en="Full Name:" data-ms="Nama Penuh:">
+    Full Name:
+</strong><br>
+{{ agreement.customer.full_name }}
+
+<br><br>
+
+<strong data-en="IC / Passport:" data-ms="KP / Pasport:">
+    IC / Passport:
+</strong><br>
+{{ agreement.customer.ic_number }}
+
+<br><br>
+
+<strong data-en="Address:" data-ms="Alamat:">
+    Address:
+</strong><br>
+{{ agreement.customer.home_address_1 }}
+
+</td>
+                </tr>
+
+                <tr>
+                    <td>4</td>
+                    <td data-en="Principal Amount"
+    data-ms="Jumlah Wang Pokok">Principal Amount</td>
+                    <td>
+                        <input
+                            type="text"
+                            name="principal_amount_words"
+                            id="principal_amount_words"
+                            value="{{ agreement.principal_amount_words }}"
+                            placeholder="Amount in words"
+                            required
+                        >
+
+                        <br><br>
+
+                        RM
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="principal_amount"
+                            value="{{ agreement.principal_amount }}"
+                            required
+                        >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>5</td>
+                    <td data-en="Interest Rate"
+    data-ms="Kadar Faedah">Interest Rate</td>
+                    <td >
+                        <span
+    id="interest_rate_is"
+    data-en="Interest Rate is"
+    data-ms="Kadar faedah adalah"
+>
+    Interest Rate is
+</span>
+
+                        <input
+                            type="text"
+                            name="interest_rate_words"
+                            id="interest_rate_words"
+                            value="{{ agreement.interest_rate_words }}"
+                            placeholder="Rate in words"
+                            required
+                        >
+
+                        %
+
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="interest_rate_percentage"
+                            id="interest_rate_percentage"
+                            value="{{ agreement.interest_rate_percentage }}"
+                            placeholder="Rate in numbers"
+                            required
+                        >
+
+                      <span
+    id="per_year_text"
+    data-en="per year"
+    data-ms="setahun"
+>
+   per year
+</span>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>6</td>
+                    <td data-en="Repayment Per Installment"
+    data-ms="Bayaran Balik Setiap Ansuran">Repayment Per Installment</td>
+                    <td>
+                        RM
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="monthly_repayment_amount"
+                            value="{{ agreement.monthly_repayment_amount }}"
+                            required
+                        >
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>7</td>
+                    <td data-en="Total Repayment Amount"
+    data-ms="Jumlah Bayaran Balik">Total Repayment Amount</td>
+                    <td>
+                        RM
+                        <input
+                            type="number"
+                            step="0.01"
+                            name="total_repayment_amount"
+                            value="{{ agreement.total_repayment_amount }}"
+                            required
+                        >
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+
+        <br>
+
+        <div
+    style="
+        background:white;
+        padding:18px 24px;
+        border-radius:16px;
+        margin: bottom 12px;
+        box-shadow:0 8px 22px rgba(0,0,0,0.06);
+        display:inline-block;
+    "
+>
+    <label style="font-weight:bold; color:#0B3D91; margin-right:10px;">
+        Book
+    </label>
+
+    <select name="book" required>
+    <option value="">Select Book</option>
+
+    <option value="BOOK1" {% if agreement.book == "BOOK1" %}selected{% endif %}>
+        Book 1
+    </option>
+
+    <option value="BOOK2" {% if agreement.book == "BOOK2" %}selected{% endif %}>
+        Book 2
+    </option>
+</select>
+</div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px;">
+
+    <div>
+        <button type="button" class="btn" onclick="setLanguage('en')">
+            English
+        </button>
+
+        <button type="button" class="btn" onclick="setLanguage('ms')">
+            Bahasa Melayu
+        </button>
+    </div>
+
+    <div>
+        <a
+    href="{% url 'agreement_detail' agreement.id %}"
+    class="btn"
+    style="background:#6b7280;"
+>
+    Cancel
+</a>
+
+<button type="submit" class="btn">
+    Update Agreement
+</button>
+    </div>
+
+</div>
+
+        
+
+    </form>
+
+</div>
+<script>
+function setLanguage(lang){
+
+    document.querySelectorAll("[data-en]").forEach(function(el){
+
+        if(lang === "en"){
+            el.textContent = el.getAttribute("data-en");
+        }
+        else{
+            el.textContent = el.getAttribute("data-ms");
+        }
+
+    });
+
+    const principalAmountWords =
+        document.getElementById("principal_amount_words");
+
+    const interestRateWords =
+        document.getElementById("interest_rate_words");
+
+    const interestRatePercentage =
+        document.getElementById("interest_rate_percentage");
+
+    if(principalAmountWords){
+        principalAmountWords.placeholder =
+            lang === "en"
+            ? "Amount in words"
+            : "Jumlah dalam perkataan";
+    }
+
+    if(interestRateWords){
+        interestRateWords.placeholder =
+            lang === "en"
+            ? "Rate in words"
+            : "Kadar dalam perkataan";
+    }
+
+    if(interestRatePercentage){
+        interestRatePercentage.placeholder =
+            lang === "en"
+            ? "Rate in numbers"
+            : "Kadar dalam nombor";
+    }
+
+    const languageInput =
+        document.getElementById("selected_language");
+
+    if(languageInput){
+        languageInput.value = lang;
+    }
+}
+</script>
+
+
+
+{% endblock %}

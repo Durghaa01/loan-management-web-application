@@ -1,0 +1,963 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<style>
+.detail-header{
+    background:linear-gradient(135deg,#0B3D91,#06295f);
+    color:white;
+    padding:26px;
+    border-radius:18px;
+    margin-bottom:22px;
+}
+
+.detail-header h1{
+    margin:0;
+    font-size:32px;
+}
+
+.detail-header p{
+    margin-top:8px;
+    opacity:0.9;
+}
+
+.detail-card{
+    background:white;
+    padding:24px;
+    border-radius:18px;
+    margin-bottom:22px;
+    box-shadow:0 8px 22px rgba(0,0,0,0.06);
+}
+.detail-grid{
+    display:grid;
+    grid-template-columns:
+        repeat(auto-fit,minmax(260px,1fr));
+    gap:18px;
+    align-items: start;
+}
+
+.detail-item{
+    background:#f8fafc;
+    padding:16px;
+    border-radius:12px;
+    min-height: 80px;
+}
+
+.detail-item strong{
+    display:block;
+    margin-bottom:6px;
+    color:#0B3D91;
+}
+</style>
+
+<div class="detail-header">
+
+    <h1>
+        Customer Profile
+    </h1>
+
+    <p>
+        View customer profile information
+    </p>
+
+    <div>
+
+    <button
+        type="button"
+        class="btn"
+        onclick="setLanguage('en')"
+        style="
+            background:white;
+            color:#0B3D91;
+            font-weight:bold;
+            margin-right:10px;
+        "
+    >
+        English
+    </button>
+
+    <button
+        type="button"
+        class="btn"
+        onclick="setLanguage('ms')"
+        style="
+            background:white;
+            color:#0B3D91;
+            font-weight:bold;
+        "
+    >
+        Bahasa Melayu
+    </button>
+
+</div>
+
+</div>
+<div class="detail-card">
+    <h3 data-en="Personal Information" data-ms="Maklumat Peribadi">
+    Personal Information
+</h3>
+    <div class="detail-grid">
+
+        <div class="detail-item">
+
+            <strong
+    data-en="Customer Number"
+    data-ms="Nombor Pelanggan"
+>
+    Customer Number
+</strong>
+
+            {{ customer.customer_reference }}
+
+        </div>
+
+        <div class="detail-item">
+
+            <strong
+    data-en="Full Name"
+    data-ms="Nama Penuh"
+>
+    Full Name
+</strong>
+
+            {{ customer.full_name }}
+
+        </div>
+
+                <div class="detail-item">
+
+            <strong
+    data-en="ID Type"
+    data-ms="Jenis ID"
+>
+    ID Type
+</strong>
+
+            {{ customer.id_type}}
+
+        </div>
+
+        <div class="detail-item">
+
+            <strong
+    data-en="IC/Passport"
+    data-ms="KP/Pasport"
+>
+    IC/Passport
+</strong>
+
+            {{ customer.ic_number }}
+
+        </div>
+
+        <div class="detail-item">
+
+            <strong
+    data-en="Phone Number"
+    data-ms="Nombor Telefon"
+>
+    Phone Number
+</strong>
+
+            {{ customer.phone|default:"-" }}
+
+        </div>
+
+        <div class="detail-item">
+
+            <strong
+    data-en="Email"
+    data-ms="Emel"
+>
+    Email
+</strong>
+
+            {{ customer.email|default:"-" }}
+
+        </div>
+
+        <div class="detail-item">
+
+    <strong
+        data-en="Status"
+        data-ms="Status"
+    >
+        Status
+    </strong>
+
+    {% if customer.is_active %}
+
+        <span
+            data-en="Active"
+            data-ms="Aktif"
+        >
+            Active
+        </span>
+
+    {% else %}
+
+        <span
+            data-en="Inactive"
+            data-ms="Tidak Aktif"
+        >
+            Inactive
+        </span>
+
+    {% endif %}
+
+</div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Gender"
+    data-ms="Jantina"
+>
+    Gender
+</strong>
+            {{ customer.gender|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Date of Birth"
+    data-ms="Tarikh Lahir"
+>
+    Date of Birth
+</strong>
+            {{ customer.date_of_birth|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Age"
+    data-ms="Umur"
+>
+    Age
+</strong>
+            {{ customer.age|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Marital Status"
+    data-ms="Status Perkahwinan"
+>
+    Marital Status
+</strong>
+            {{ customer.marital_status|default:"-" }}
+        </div>
+
+        <div class="detail-item" style="grid-column:1 / span 1;">
+             <strong
+    data-en="Customer Photo"
+    data-ms="Gambar Pelanggan"
+>
+    Customer Photo
+</strong>
+            {% if customer.customer_photo %}
+                <br>
+                <img
+                    src="{{ customer.customer_photo.url }}"
+                    style="width:100%; max-width: 120px; height: 120px;object-fit:contain; border-radius:10px; border: 1px solid #d1d5db; background: white;"
+                >
+            {% else %}
+                -
+            {% endif %}
+        </div>
+
+        <div class="detail-item" style="grid-column:2 / span 1;">
+             <strong
+    data-en="MyKad Photo"
+    data-ms="Gambar MyKad"
+>
+    MyKad Photo
+</strong>
+            {% if customer.mykad_photo %}
+                <br>
+                <img
+                    src="{{ customer.mykad_photo.url }}"
+                    style="width:100%; max-width: 120px; height: 120px;object-fit:contain; border-radius:10px; border: 1px solid #d1d5db; background: white;"
+                >
+            {% else %}
+                -
+            {% endif %}
+        </div>
+
+
+
+    </div>
+
+</div>
+<div class="detail-card">
+
+    <h3 data-en="Home Information" data-ms="Maklumat Rumah">
+        Home Information
+    </h3>
+
+    <div class="detail-grid">
+
+        <div class="detail-item">
+             <strong
+    data-en="Home Address 1"
+    data-ms="Alamat Rumah 1"
+>
+    Home Address 1
+</strong>
+            {{ customer.home_address_1|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Home Address 2"
+    data-ms="Alamat Rumah 2"
+>
+    Home Address 2
+</strong>
+            {{ customer.home_address_2|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Home Address 3"
+    data-ms="Alamat Rumah 3"
+>
+    Home Address 3
+</strong>
+            {{ customer.home_address_3|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Home Phone Number"
+    data-ms="Nombor Telefon Rumah"
+>
+    Home Phone Number
+</strong>
+            {{ customer.home_phone_number|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Phone Number 2"
+    data-ms="Nombor Telefon 2"
+>
+    Phone Number 2
+</strong>
+            {{ customer.phone_number_2|default:"-" }}
+        </div>
+
+    </div>
+
+</div>
+<div class="detail-card">
+
+    <h3 data-en="Employment Information" data-ms="Maklumat Pekerjaan">
+        Employment Information
+    </h3>
+
+    <div class="detail-grid">
+
+        <div class="detail-item">
+             <strong
+    data-en="Working Status"
+    data-ms="Status Pekerjaan"
+>
+    Working Status
+</strong>
+            {{ customer.working_status|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Employer Name"
+    data-ms="Nama Majikan"
+>
+    Employer Name
+</strong>
+            {{ customer.employer_name|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Employer Address"
+    data-ms="Alamat Majikan"
+>
+    Employer Address
+</strong>
+            {{ customer.employer_address|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="Office Phone Number"
+    data-ms="Nombor Telefon Pejabat"
+>
+    Office Phone Number
+</strong>
+            {{ customer.office_phone_number|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="Total Working Years"
+    data-ms="Jumlah Tahun Bekerja"
+>
+    Total Working Years
+</strong>
+            {{ customer.total_working_years|default:"-" }}
+        </div>
+
+    </div>
+
+</div>
+<div class="detail-card">
+
+    <h3 data-en="Family Information" data-ms="Maklumat Keluarga">
+        Family Information
+    </h3>
+
+    <div class="detail-grid">
+
+        <div class="detail-item">
+             <strong
+    data-en="Spouse Full Name"
+    data-ms="Nama Penuh Pasangan"
+>
+    Spouse Full Name
+</strong>
+            {{ customer.spouse_name|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Spouse IC/Passport"
+    data-ms="KP/Pasport Pasangan"
+>
+    Spouse IC/Passport
+</strong>
+            {{ customer.spouse_ic_number|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Spouse Age"
+    data-ms="Umur Pasangan"
+>
+    Spouse Age
+</strong>
+            {{ customer.spouse_age|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Spouse Job"
+    data-ms="Pekerjaan Pasangan"
+>
+    Spouse Job
+</strong>
+            {{ customer.spouse_job|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Spouse Monthly Income"
+    data-ms="Pendapatan Bulanan Pasangan"
+>
+    Spouse Monthly Income
+</strong>
+            {{ customer.spouse_monthly_income|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Number of Children"
+    data-ms="Bilangan Anak"
+>
+    Number of Children
+</strong>
+            {{ customer.number_of_children|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Number of Schooling Children"
+    data-ms="Bilangan Anak Bersekolah"
+>
+    Number of Schooling Children
+</strong>
+            {{ customer.number_of_schooling_children|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Number of Working Children"
+    data-ms="Bilangan Anak Bekerja"
+>
+    Number of Working Children
+</strong>
+            {{ customer.number_of_working_children|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="Working Children Total Income"
+    data-ms="Jumlah Pendapatan Anak Bekerja"
+>
+    Working Children Total Income
+</strong>
+            {{ customer.working_children_total_income|default:"-" }}
+        </div>
+
+    </div>
+
+</div>
+<div class="detail-card">
+
+    <h3 data-en="Financial Information" data-ms="Maklumat Kewangan">
+        Financial Information 
+    </h3>
+
+    <div class="detail-grid">
+
+        <div class="detail-item">
+             <strong
+    data-en="Monthly Net Income"
+    data-ms="Pendapatan Bersih Bulanan"
+>
+    Monthly Net Income
+</strong>
+            {{ customer.monthly_net_income|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Basic Monthly Salary"
+    data-ms="Gaji Asas Bulanan"
+>
+    Basic Monthly Salary
+</strong>
+            {{ customer.basic_monthly_salary|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Other Income Name"
+    data-ms="Nama Pendapatan Lain"
+>
+    Other Income Name
+</strong>
+            {{ customer.other_income_name|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Other Income Total"
+    data-ms="Jumlah Pendapatan Lain"
+>
+    Other Income Total
+</strong>
+            {{ customer.other_income_total|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Car Monthly Loan"
+    data-ms="Pinjaman Kereta Bulanan"
+>
+    Car Monthly Loan
+</strong>
+            {{ customer.car_loan|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Home Monthly Loan"
+    data-ms="Pinjaman Rumah Bulanan"
+>
+    Home Monthly Loan
+</strong>
+
+{{ customer.house_loan|default:"-" }}
+        </div>
+        <div class="detail-item">
+             <strong
+    data-en="Motorcycle Monthly Loan"
+    data-ms="Pinjaman Motosikal Bulanan"
+>
+    Motorcycle Monthly Loan
+</strong>
+            {{ customer.motorcycle_loan|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Other Loan"
+    data-ms="Pinjaman Lain"
+>
+    Other Loan
+</strong>
+            {{ customer.other_loan|default:"-" }}
+        </div>
+
+                <div class="detail-item">
+            <strong
+    data-en="House Monthly Rental"
+    data-ms="Sewa Bulanan Rumah"
+>
+    House Monthly Rental
+</strong>
+            {{ customer.house_monthly_rental|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+             <strong
+    data-en="Monthly Loan Total"
+    data-ms="Jumlah Pinjaman Bulanan"
+>
+    Monthly Loan Total
+</strong>
+            {{ customer.monthly_loan_total|default:"-" }}
+        </div>
+
+    </div>
+
+</div>
+<div class="detail-card">
+
+    <h3 data-en="Housing & Vehicle Information" data-ms="Maklumat Perumahan & Kenderaan">
+        Housing & Vehicle Information
+    </h3>
+
+    <div class="detail-grid">
+
+        <div class="detail-item">
+             <strong
+    data-en="House Type"
+    data-ms="Jenis Rumah"
+>
+    House Type
+</strong>
+            {{ customer.house_type|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="House Ownership"
+    data-ms="Pemilikan Rumah"
+>
+    House Ownership
+</strong>
+            {{ customer.house_ownership|default:"-" }}
+        </div>
+
+
+
+        <div class="detail-item">
+            <strong
+    data-en="Vehicle Type"
+    data-ms="Jenis Kenderaan"
+>
+    Vehicle Type
+</strong>
+            {{ customer.vehicle_type|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="Vehicle Name"
+    data-ms="Nama Kenderaan"
+>
+    Vehicle Name
+</strong>
+            {{ customer.vehicle_name|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="Vehicle Registration Number"
+    data-ms="Nombor Pendaftaran Kenderaan"
+>
+    Vehicle Registration Number
+</strong>
+            {{ customer.vehicle_registration_number|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="Vehicle Color"
+    data-ms="Warna Kenderaan"
+>
+    Vehicle Color
+</strong>
+            {{ customer.vehicle_color|default:"-" }}
+        </div>
+
+
+    </div>
+
+</div>
+<div class="detail-card">
+
+    <h3 data-en="Payment Information" data-ms="Maklumat Pembayaran">
+        Payment Information
+    </h3>
+
+    <div class="detail-grid">
+
+        <div class="detail-item">
+    <strong
+        data-en="Payment Bank Name"
+        data-ms="Nama Bank Pembayaran"
+    >
+        Payment Bank Name
+    </strong>
+    {{ customer.payment_bank_name|default:"-" }}
+</div>
+
+{% if customer.payment_bank_name == "Other" %}
+<div class="detail-item">
+    <strong
+        data-en="Other Payment Bank Name"
+        data-ms="Nama Bank Pembayaran Lain"
+    >
+        Other Payment Bank Name
+    </strong>
+    {{ customer.payment_other_bank_name|default:"-" }}
+</div>
+{% endif %}
+
+<div class="detail-item">
+    <strong
+        data-en="Balance Transfer Bank"
+        data-ms="Bank Pemindahan Baki"
+    >
+        Balance Transfer Bank
+    </strong>
+    {{ customer.balance_transfer_bank_name|default:"-" }}
+</div>
+
+{% if customer.balance_transfer_bank_name == "Other" %}
+<div class="detail-item">
+    <strong
+        data-en="Other Balance Transfer Bank Name"
+        data-ms="Nama Bank Pemindahan Baki Lain"
+    >
+        Other Balance Transfer Bank Name
+    </strong>
+    {{ customer.balance_transfer_other_bank_name|default:"-" }}
+</div>
+{% endif %}
+
+        <div class="detail-item">
+            <strong
+    data-en="Balance Transfer Account Number"
+    data-ms="Nombor Akaun Pemindahan Baki"
+>
+    Balance Transfer Account Number
+</strong>
+            {{ customer.balance_transfer_account_number|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="Balance Transfer Account Owner"
+    data-ms="Pemilik Akaun Pemindahan Baki"
+>
+    Balance Transfer Account Owner
+</strong>
+            {{ customer.balance_transfer_account_owner|default:"-" }}
+        </div>
+
+    </div>
+
+</div>
+
+<div class="detail-card">
+
+    <h3 data-en="Other Information" data-ms="Maklumat Lain">
+        Other Information
+    </h3>
+
+    <div class="detail-grid">
+
+        <div class="detail-item">
+            <strong
+    data-en="Introduced By"
+    data-ms="Diperkenalkan Oleh"
+>
+    Introduced By
+</strong>
+            {{ customer.introduced_by|default:"-" }}
+        </div>
+
+        <div class="detail-item">
+            <strong
+    data-en="Introducer IC/Passport"
+    data-ms="KP/Pasport Pengenal"
+>
+    Introducer IC/Passport
+</strong>
+            {{ customer.introducer_ic_number|default:"-" }}
+        </div>
+
+    </div>
+
+    <br>
+
+    <div class="detail-item">
+        <strong
+    data-en="Note"
+    data-ms="Nota"
+>
+    Note
+</strong>
+        {{ customer.note|default:"-" }}
+    </div>
+
+    <br>
+
+    <div class="detail-item">
+        <strong
+    data-en="Internal Note"
+    data-ms="Nota Dalaman"
+>
+    Internal Note
+</strong>
+        {{ customer.internal_note|default:"-" }}
+    </div>
+
+</div>
+
+<div class="detail-card">
+
+    <h3 data-en="Documents" data-ms="Dokumen">
+        Documents
+    </h3>
+
+    {% if document_summary %}
+
+    <ul>
+        {% for doc_type, count in document_summary %}
+    <li>
+        {{ doc_type }} ({{ count }})
+    </li>
+{% endfor %}
+    </ul>
+
+{% else %}
+
+    <p
+    data-en="No documents uploaded."
+    data-ms="Tiada dokumen dimuat naik."
+>
+    No documents uploaded
+</p>
+
+{% endif %}
+
+   
+
+</div>
+
+<div
+    style="
+        display:flex;
+        justify-content:flex-end;
+        gap:10px;
+        margin-bottom:30px;
+    "
+>
+ <a
+        href="{% url 'customer_document_upload' customer_id=customer.id %}"
+        class="btn"
+    >
+        Upload Document
+    </a>
+    <a
+     id="downloadProfileBtn"
+    href="{% url 'customer_download_options' customer.id %}?lang=en"
+    class="btn"
+    style="
+        background:#0B3D91;
+        color:white;
+        text-decoration:none;
+    "
+>
+    Download Profile
+</a>
+
+    <a
+    href="{% url 'customer_documents_download' customer.id %}"
+    class="btn"
+>
+    Download Customer Documents
+</a>
+
+    <a
+        href="{% url 'customer_edit' customer_id=customer.id %}"
+        class="btn"
+    >
+        Edit Customer
+    </a>
+
+    <a href="{% url 'agreement_create' customer.id %}" class="btn">
+    Create Agreement
+</a>
+
+    <a
+        href="{% url 'customers_list' %}"
+        class="btn"
+        style="background:#6b7280;"
+    >
+        Back to Customers
+    </a>
+
+</div>
+<script>
+function setLanguage(lang){
+
+    document.querySelectorAll("[data-en]").forEach(function(el){
+
+        if(lang === "en"){
+            el.textContent = el.getAttribute("data-en");
+        }
+        else{
+            el.textContent = el.getAttribute("data-ms");
+        }
+
+    });
+
+    const downloadBtn = document.getElementById("downloadProfileBtn");
+
+    if(downloadBtn){
+        downloadBtn.href =
+            "{% url 'customer_download_options' customer.id %}?lang=" + lang;
+    }
+
+}
+</script>
+{% if clear_customer_form %}
+<script>
+sessionStorage.setItem(
+    "clear_customer_form_after_submit",
+    "yes"
+);
+</script>
+{% endif %}
+{% if from_customer_create or from_customer_edit %}
+<script>
+window.addEventListener("popstate", function(){
+
+    window.location.href =
+        "{% url 'customers_list' %}";
+
+});
+
+window.history.pushState(
+    null,
+    "",
+    window.location.href
+);
+</script>
+{% endif %}
+{% endblock %}

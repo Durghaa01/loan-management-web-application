@@ -1,0 +1,284 @@
+{% extends "core/base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <h2>Upload Customer Document</h2>
+    <p><strong>Customer No:</strong> {{ customer.customer_reference }}</p>
+<p><strong>Customer Name:</strong> {{ customer.full_name }}</p>
+<p><strong>IC/Passport:</strong> {{ customer.ic_number }}</p>
+</div>
+
+<div class="card">
+
+    <div id="fileErrorPopup" class="message-popup" style="display:none;">
+        <div class="message-box error">
+            Please choose a document file
+        </div>
+    </div>
+
+    <form
+        method="POST"
+        enctype="multipart/form-data"
+        id="documentUploadForm"
+    >
+        {% csrf_token %}
+
+        <div id="documentsContainer">
+
+            <div class="document-row" style="margin-bottom:20px; border:1px solid #e5e7eb; padding:15px; border-radius:12px;">
+
+                <h4>Document 1</h4>
+
+                <button
+    type="button"
+    class="btn remove-document-btn"
+    onclick="removeDocumentRow(this)"
+    style="
+        background:#DC2626;
+        display:none;
+        float:right;
+        margin-top:-38px;
+    "
+>
+    Remove
+</button>
+
+                <label>Document Type</label>
+
+                <select
+                    name="doc_type[]"
+                    class="doc-type"
+                    required
+                    onchange="toggleOtherType(this)"
+                >
+                    <option value="">Select</option>
+                    <option value="IC">IC</option>
+                    <option value="Passport">Passport</option>
+                    <option value="Salary Slip">Salary Slip</option>
+                    <option value="Bank Statement">Bank Statement</option>
+                    <option value="Utility Bill">Utility Bill</option>
+                    <option value="Other">Other</option>
+                </select>
+
+                <input
+                    type="text"
+                    name="other_doc_type[]"
+                    class="other-doc-type"
+                    placeholder="Enter document type"
+                    style="
+                        display:none;
+                        margin-top:10px;
+                        width:350px;
+                        padding:10px;
+                    "
+                >
+
+                <br><br>
+
+                <input
+                    type="file"
+                    name="file[]"
+                    class="file-input"
+                    style="display:none;"
+                >
+
+                <div style="display:flex; align-items:center; gap:8px; width:100%;">
+
+                    <button
+                        type="button"
+                        class="btn"
+                        onclick="this.closest('.document-row').querySelector('.file-input').click()"
+                    >
+                        Choose Document
+                    </button>
+
+                    <span class="file-name">No file selected</span>
+
+                </div>
+
+            </div>
+
+        </div>
+
+        <button
+            type="button"
+            class="btn"
+            onclick="addDocumentRow()"
+        >
+            + Add Another Document
+        </button>
+
+        <button
+            type="submit"
+            class="btn"
+            style="float:right;"
+        >
+            Upload
+        </button>
+
+
+</div>
+    </form>
+    <div style="text-align:right; margin-top:20px;">
+
+    <a
+        href="{% url 'customer_summary' customer.id %}"
+        class="btn"
+        style="background:#6b7280;"
+    >
+        Back to Customer Profile
+    </a>
+
+</div>
+
+<script>
+let documentCount = 1;
+
+function toggleOtherType(selectElement){
+
+    const row = selectElement.closest(".document-row");
+    const otherBox = row.querySelector(".other-doc-type");
+
+    if(selectElement.value === "Other"){
+        otherBox.style.display = "block";
+        otherBox.required = true;
+    }
+    else{
+        otherBox.style.display = "none";
+        otherBox.required = false;
+        otherBox.value = "";
+    }
+}
+
+function addDocumentRow(){
+
+    documentCount++;
+
+    const firstRow = document.querySelector(".document-row");
+    const newRow = firstRow.cloneNode(true);
+
+    newRow.querySelector("h4").innerText =
+        "Document " + documentCount;
+
+    newRow.querySelector(".remove-document-btn").style.display =
+    "inline-block";
+
+    newRow.querySelector(".doc-type").value = "";
+    newRow.querySelector(".other-doc-type").value = "";
+    newRow.querySelector(".other-doc-type").style.display = "none";
+    newRow.querySelector(".other-doc-type").required = false;
+    newRow.querySelector(".file-input").value = "";
+    newRow.querySelector(".file-name").innerText = "No file selected";
+
+    document.getElementById("documentsContainer").appendChild(newRow);
+}
+
+function removeDocumentRow(button){
+
+    button.closest(".document-row").remove();
+
+    const rows = document.querySelectorAll(".document-row");
+
+    rows.forEach(function(row, index){
+
+        row.querySelector("h4").innerText =
+            "Document " + (index + 1);
+
+    });
+
+    documentCount = rows.length;
+}
+
+document.addEventListener("change", function(event){
+
+    if(event.target.classList.contains("file-input")){
+
+        const row = event.target.closest(".document-row");
+row.querySelector(".file-name").innerText =
+            event.target.files.length > 0
+            ? event.target.files[0].name
+            : "No file selected";
+    }
+});
+
+document.getElementById("documentUploadForm").addEventListener(
+    "submit",
+    function(event){
+
+        const rows =
+            document.querySelectorAll(".document-row");
+
+        let hasValidFile = false;
+
+        for(let i = 0; i < rows.length; i++){
+
+            const type =
+                rows[i].querySelector(".doc-type");
+
+            const file =
+                rows[i].querySelector(".file-input");
+
+            const popup =
+                document.getElementById("fileErrorPopup");
+
+            if(
+                type.value &&
+                file.files.length === 0
+            ){
+                event.preventDefault();
+
+                popup.querySelector(".message-box").innerText =
+                    "Please choose a document file for Document " + (i + 1);
+
+                popup.style.display = "block";
+
+                setTimeout(function(){
+                    popup.style.display = "none";
+                }, 3000);
+
+                return;
+            }
+
+            if(
+                file.files.length > 0 &&
+                !type.value
+            ){
+                event.preventDefault();
+
+                popup.querySelector(".message-box").innerText =
+                    "Please select document type for Document " + (i + 1);
+
+                popup.style.display = "block";
+
+                setTimeout(function(){
+                    popup.style.display = "none";
+                }, 3000);
+
+                return;
+            }
+
+            if(file.files.length > 0 && type.value){
+                hasValidFile = true;
+            }
+        }
+
+        if(!hasValidFile){
+            event.preventDefault();
+
+            const popup =
+                document.getElementById("fileErrorPopup");
+
+            popup.querySelector(".message-box").innerText =
+                "Please choose a document file";
+
+            popup.style.display = "block";
+
+            setTimeout(function(){
+                popup.style.display = "none";
+            }, 3000);
+        }
+    }
+);
+</script>
+{% endblock %}
