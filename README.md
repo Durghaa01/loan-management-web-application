@@ -35,7 +35,7 @@ The system centralizes customer onboarding, loan agreements, payments, ledger re
 
 ## Documentation
 
-📄 [Download Project Documentation](docs/project-documentation.docx?raw=1)
+📄 [Project Documentation (Word)](docs/project-documentation.docx?raw=1)
 
 ## Local Setup
 
